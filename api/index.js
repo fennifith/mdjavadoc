@@ -63,18 +63,78 @@ function parseFile(file, prefix) {
 	
 	let docs = [];
 
-	let content = _fs.readSync(_path.resolve(file));
-	let reg = /(\/\*\*)([A-Z0-9a-z@#\*\\\/\s\n\t]){0,}(\*\/)/g
+	let content = _fs.readFileSync(_path.resolve(file), "utf8");
+	let reg = /(?<=\/\*\*)([\s\S]*?)(?=\*\/)/g;
 	let match;
 	while ((match = reg.exec(content)) !== null) {
+		console.log("matched");
+		let matchText = match[0].substring(match[0].indexOf("\n") + 1, match[0].lastIndexOf("\n"));
 		let doc = {
+			description: "",
 			source: prefix.split(".").join("/") + "/" + file + "#L" + getLineNumber(content, match.index)
 		};
-		
-		for (let i in match[2].split(\n)) {
-			
+
+		let tag = null;
+		let lines = matchText.split("\n");
+		for (let i in lines) {
+			let line = lines[i].replace(/([ \t]){0,}(\*)( ){0,}/g, "");
+			if (line.startsWith("@")) {
+				let spaceIndex = line.search(/[ \t]/);
+				tag = line.substring(1, spaceIndex);
+				line = line.substring(spaceIndex + 1);
+				let phrase = null;
+				if (tags[tag]) {
+					let object = {
+						content: line,
+						template: tags[tag],
+						values: []
+					};
+
+					let words = line.split(/[ \t]{1,}/g);
+					for (let word in words) {
+						if (phrase) {
+							if (words[word].endsWith("}")) {
+								// TODO: parse phrase
+								phrase = null;
+							} else {
+								phrase.push(words[word]);
+							}
+						} else if (words[word].startsWith("{")) {
+							phrase = [words[word]];
+						} else {
+							if (object.values.length < tags[tag].length)
+								object.values.push(words[word]);
+							else object.values[object.values.length - 1] += " " + words[word];
+						}
+					}
+
+					if (doc[tag])
+						doc[tag].push(object);
+					else doc[tag] = [object];
+				} else tag = null;
+			} else if (tag) {
+				let object = doc[tag][doc[tag].length - 1];
+				let words = line.split(/[ \t]{1,}/g);
+				for (let word in words) {
+					if (object.values.length < tags[tag].length)
+						object.values.push(words[word]);
+					else object.values[object.values.length - 1] += " " + words[word];
+				}
+			} else {
+				if (line.trim().length == 0)
+					doc.description += "\n";
+				else {
+					console.log("not newline");
+					doc.description += line.trim() + " ";
+					newline = false;
+				}
+			}
 		}
+
+		docs.push(doc);
 	}
+
+	return docs;
 }
 
 /**
@@ -85,7 +145,7 @@ function parseFile(file, prefix) {
  * @return The line number of the specified index.
  */
 function getLineNumber(content, index) {
-	let line = 0;
+	let line = 1;
 	for (let i = 0; i < content.length && i <= index; i++) {
 		if (content.charAt(i) == '\n')
 			line++;
@@ -93,3 +153,6 @@ function getLineNumber(content, index) {
 	
 	return line;
 }
+
+let docs = parseFile("index.js");
+console.log(docs);
