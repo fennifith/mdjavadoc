@@ -1,0 +1,19 @@
+{
+  "name": "mdjavadoc-api",
+  "version": "1.0.0",
+  "description": "Generates markdown javadocs for use in Jekyll and GitHub Pages.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheAndroidMaster/mdjavadoc.git"
+  },
+  "author": "James Fenn <18jafenn90@gmail.com> (https://jfenn.me/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TheAndroidMaster/mdjavadoc/issues"
+  },
+  "homepage": "https://github.com/TheAndroidMaster/mdjavadoc#readme"
+}
