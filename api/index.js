@@ -164,3 +164,6 @@ function getLineNumber(content, index) {
 	
 	return line;
 }
+
+module.exports.parseDirectory = parseDirectory;
+module.exports.parseFile = parseFile;
