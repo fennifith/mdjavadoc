@@ -106,13 +106,14 @@ function parseFile(file, prefix) {
 					for (let word in words) {
 						if (phrase) {
 							if (words[word].endsWith("}")) {
-								// TODO: parse phrase
+								phrase.push(words[word].substring(0, words[word].length - 1));
+								object.values[object.values.length - 1] += " " + parsePhrase(phrase, prefix);
 								phrase = null;
 							} else {
 								phrase.push(words[word]);
 							}
 						} else if (words[word].startsWith("{")) {
-							phrase = [words[word]];
+							phrase = [words[word].substring(1)];
 						} else {
 							if (object.values.length < tags[tag].length)
 								object.values.push(words[word]);
@@ -136,8 +137,23 @@ function parseFile(file, prefix) {
 				if (line.trim().length == 0)
 					doc.description += "\n";
 				else {
-					doc.description += line.trim() + " ";
-					newline = false;
+					let words = line.trim().split(/[ \t]{1,}/g);
+					let phrase = null;
+					for (let word in words) {
+						if (phrase !== null) {
+							if (words[word].includes("}")) {
+								phrase.push(words[word].substring(0, words[word].indexOf("}")));
+								doc.description += parsePhrase(phrase, prefix) + words[word].substring(words[word].indexOf("}") + 1);
+								phrase = null;
+							} else {
+								phrase.push(words[word]);
+							}
+						} else if (words[word].startsWith("{@")) {
+							phrase = [words[word].substring(2)];
+						} else {
+							doc.description += words[word] + " ";
+						}
+					}
 				}
 			}
 		}
@@ -146,6 +162,10 @@ function parseFile(file, prefix) {
 	}
 
 	return docs;
+}
+
+function parsePhrase(phrase, prefix) {
+	return "PHRASE";
 }
 
 /**
