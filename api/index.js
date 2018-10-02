@@ -1,3 +1,8 @@
+/**
+ * Specifies a template for all of the tags ("@something")
+ * in the parsed javadocs to use. These are useful for building
+ * table layouts from the resulting data.
+ */
 const tags = {
 	author: ["Name"],
 	version: ["Current Version"],
