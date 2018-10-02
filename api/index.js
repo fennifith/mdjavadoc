@@ -67,10 +67,17 @@ function parseFile(file, prefix) {
 	let reg = /(?<=\/\*\*)([\s\S]*?)(?=\*\/)/g;
 	let match;
 	while ((match = reg.exec(content)) !== null) {
-		console.log("matched");
 		let matchText = match[0].substring(match[0].indexOf("\n") + 1, match[0].lastIndexOf("\n"));
+
+		let startIndex = match.index + match[0].length;
+		startIndex += content.substring(startIndex).indexOf("\n") + 1;
+		let declaration = content.substring(startIndex, startIndex + content.substring(startIndex).indexOf("\n"));
+		declaration = (/([A-Z0-9a-z ]*)/g).exec(declaration)[1].trim().split(" ");
+		
 		let doc = {
+			name: declaration.pop(),
 			description: "",
+			type: declaration,
 			source: prefix.split(".").join("/") + "/" + file + "#L" + getLineNumber(content, match.index)
 		};
 
@@ -124,7 +131,6 @@ function parseFile(file, prefix) {
 				if (line.trim().length == 0)
 					doc.description += "\n";
 				else {
-					console.log("not newline");
 					doc.description += line.trim() + " ";
 					newline = false;
 				}
@@ -153,6 +159,3 @@ function getLineNumber(content, index) {
 	
 	return line;
 }
-
-let docs = parseFile("index.js");
-console.log(docs);
