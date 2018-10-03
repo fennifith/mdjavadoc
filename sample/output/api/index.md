@@ -1,4 +1,4 @@
-## [tags](../blob/masterapi/.//api/index.js#L2)
+## [tags](../blob/master/api/index.js#L5)
 
 **Type:** `const`
 
@@ -7,7 +7,7 @@ in the parsed javadocs to use. These are useful for building
 table layouts from the resulting data. 
 
 
-## [generateMarkdownFiles](../blob/masterapi/.//api/index.js#L24)
+## [generateMarkdownFiles](../blob/master/api/index.js#L27)
 
 **Type:** `function`
 
@@ -21,7 +21,7 @@ Generates a set of markdown docs from the files in a directory.
 |out|The directory in which to place generated files.|
 |options|Optional arguments.|
 
-## [generateMarkdownFile](../blob/masterapi/.//api/index.js#L62)
+## [generateMarkdownFile](../blob/master/api/index.js#L65)
 
 **Type:** `function`
 
@@ -35,7 +35,7 @@ Generates a markdown doc from the specified file.
 |out|The file to output the markdown into.|
 |options|Optional arguments.|
 
-## [formMarkdown](../blob/masterapi/.//api/index.js#L77)
+## [formMarkdown](../blob/master/api/index.js#L80)
 
 **Type:** `function`
 
@@ -51,7 +51,7 @@ Form basic markdown from an array of parsed data.
 **Returned Value:**  A string of the markdown formatted docs.
 
 
-## [parseDirectory](../blob/masterapi/.//api/index.js#L131)
+## [parseDirectory](../blob/master/api/index.js#L129)
 
 **Type:** `function`
 
@@ -68,7 +68,7 @@ Parses docs for all of the files in a directory.
 **Returned Value:**  An array of the docs fetched from each file.
 
 
-## [parseFile](../blob/masterapi/.//api/index.js#L154)
+## [parseFile](../blob/master/api/index.js#L157)
 
 **Type:** `function`
 
@@ -97,7 +97,7 @@ values: ["somethingelse", "The thing for the stuff."]
 ``` 
 
 The full list of tags that are included in this object can 
-be found [here](api.index#tags).
+be found [here](api/index#tags).
 
 
 
@@ -105,11 +105,12 @@ be found [here](api.index#tags).
 |-----|-----|
 |file|The file to parse docs from.|
 |prefix|The prefix to add to the doc packages.|
+|options|Optional arguments.|
 
 **Returned Value:**  An array of the parsed docs for the file.
 
 
-## [parsePhrase](../blob/masterapi/.//api/index.js#L290)
+## [parsePhrase](../blob/master/api/index.js#L298)
 
 **Type:** `function`
 
@@ -125,12 +126,12 @@ used in the javadoc, making the returned value something like
 |-----|-----|
 |phrase|An array of the values of the embedded tag, starting  with the tag name (excluding the @) and all of the following embedded text split by whitespace.|
 |prefix|The package prefix to append to urls.|
-|file|The file name to append to urls.|
+|fileName|The file name to append to urls.|
 
 **Returned Value:**  A markdown link to append to stuff.
 
 
-## [getLineNumber](../blob/masterapi/.//api/index.js#L324)
+## [getLineNumber](../blob/master/api/index.js#L332)
 
 **Type:** `function`
 

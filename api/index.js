@@ -1,3 +1,6 @@
+const DEFAULT_SOURCE_PREFIX = "../blob/master";
+const DEFAULT_REG = /^(?!\.).*/;
+
 /**
  * Specifies a template for all of the tags ("@something")
  * in the parsed javadocs to use. These are useful for building
@@ -30,10 +33,8 @@ const _fs = require("fs");
 function generateMarkdownFiles(dir, out, options) {
 	if (!options)
 		options = {};
-	if (!options.reg)
-		options.reg = /^(?!\.).*/;
 
-	let data = parseDirectory(dir, null, options.reg);
+	let data = parseDirectory(dir, null, options);
 	generateMarkdownFilesRecursive(data, out, null, options);
 }
 
@@ -43,17 +44,19 @@ function generateMarkdownFilesRecursive(data, out, prefix, options) {
 
 	for (let item in data) {
 		if (Array.isArray(data[item])) {
-			let path = out;
-			if (prefix) {
-				prefix.split(".").forEach((dir) => {
-					path += "/" + dir;
-					let resolved = _path.resolve(path);
-					if (!_fs.existsSync(resolved))
-						_fs.mkdirSync(resolved);
-				});
-			}
+			if (data[item].length > 0) {
+				let path = out;
+				if (prefix) {
+					prefix.split(".").forEach((dir) => {
+						path += "/" + dir;
+						let resolved = _path.resolve(path);
+						if (!_fs.existsSync(resolved))
+							_fs.mkdirSync(resolved);
+					});
+				}
 			
-			_fs.writeFileSync(_path.resolve(path + "/" + (options.extensions ? item : item.split(".")[0]) + ".md"), formMarkdown(data[item], options));
+				_fs.writeFileSync(_path.resolve(path + "/" + (options.extensions ? item : item.split(".")[0]) + ".md"), formMarkdown(data[item], options));
+			}
 		} else generateMarkdownFilesRecursive(data[item], out, (prefix ? prefix + "." : "") + item, options);
 	}
 }
@@ -69,7 +72,7 @@ function generateMarkdownFile(file, out, options) {
 	if (!options)
 		options = {};
 	
-	let markdown = formMarkdown(parseFile(file, options.prefix), options);
+	let markdown = formMarkdown(parseFile(file, options.prefix, options), options);
 	_fs.writeFileSync(_path.resolve(out), markdown);
 }
 
@@ -85,19 +88,14 @@ function formMarkdown(data, options) {
 	if (!options)
 		options = {};
 		
-	if (!options.sourcePrefix)
-		options.sourcePrefix = "../blob/master";
-		
 	let markdown = "";
 	
 	for (let i in data) {
-		if (!data[i].type)
-			console.log(data[i]);
 		if (data[i].type.includes("public") || !options.isPublic) {
 			if (data[i].type.includes("class"))
 				markdown += "# ";
 			else markdown += "## ";
-			markdown += "[" + data[i].name + "](" + options.sourcePrefix + data[i].source + ")" + "\n\n";
+			markdown += "[" + data[i].name + "](" + data[i].source + ")" + "\n\n";
 			
 			if (data[i].type.length > 0)
 				markdown += "**Type:** `" + data[i].type.join("` `") + "`\n\n";
@@ -135,16 +133,21 @@ function formMarkdown(data, options) {
  * @param reg		A regex statement to match file names to.
  * @return 			An array of the docs fetched from each file.
  */
-function parseDirectory(dir, prefix, reg) {	
+function parseDirectory(dir, prefix, options) {	
+	if (!options)
+		options = {};
+	if (!options.reg)
+		options.reg = DEFAULT_REG;
+
 	let object = {};
 	_fs.readdirSync(_path.resolve(dir)).forEach((filename) => {
-		if (!reg || reg.test(filename)) {
+		if (options.reg === null || options.reg.test(filename)) {
 			let stat = _fs.lstatSync(_path.resolve(dir + "/" + filename));
 			if (stat.isDirectory())
-				object[filename] = parseDirectory(dir + "/" + filename, (prefix ? prefix + "." : "") + filename, reg);
+				object[filename] = parseDirectory(dir + "/" + filename, (prefix ? prefix + "." : "") + filename, options);
 			else if (stat.isFile())
-				object[filename] = parseFile(dir + "/" + filename, prefix);
-		} else console.log("ignoring " + prefix + "/" + filename);
+				object[filename] = parseFile(dir + "/" + filename, prefix, options);
+		}
 	});
 	
 	return object;
@@ -180,11 +183,16 @@ function parseDirectory(dir, prefix, reg) {
  * 
  * @param file 		The file to parse docs from.
  * @param prefix 	The prefix to add to the doc packages.
+ * @param options	Optional arguments.
  * @return 			An array of the parsed docs for the file.
  */
-function parseFile(file, prefix) {
+function parseFile(file, prefix, options) {
 	if (!prefix)
 		prefix = "";
+	if (!options)
+		options = {};
+	if (!options.sourcePrefix)
+		options.sourcePrefix = DEFAULT_SOURCE_PREFIX;
 	
 	let docs = [];
 
@@ -205,7 +213,7 @@ function parseFile(file, prefix) {
 			name: declaration.pop(),
 			description: "",
 			type: declaration,
-			source: prefix.split(".").join("/") + "/" + file + "#L" + getLineNumber(content, match.index)
+			source: options.sourcePrefix + "/" + prefix.split(".").join("/") + "/" + fileName + "#L" + getLineNumber(content, match.index)
 		};
 
 		let tag = null;
@@ -229,7 +237,7 @@ function parseFile(file, prefix) {
 						if (phrase) {
 							if (words[word].endsWith("}")) {
 								phrase.push(words[word].substring(0, words[word].length - 1));
-								object.values[object.values.length - 1] += " " + parsePhrase(phrase, prefix, fileName);
+								object.values[object.values.length - 1] += " " + parsePhrase(phrase, prefix, options.extensions ? fileName : fileName.split(".")[0]);
 								phrase = null;
 							} else {
 								phrase.push(words[word]);
@@ -263,7 +271,7 @@ function parseFile(file, prefix) {
 						if (phrase !== null) {
 							if (words[word].includes("}")) {
 								phrase.push(words[word].substring(0, words[word].indexOf("}")));
-								doc.description += parsePhrase(phrase, prefix, fileName) + words[word].substring(words[word].indexOf("}") + 1);
+								doc.description += parsePhrase(phrase, prefix, options.extensions ? fileName : fileName.split(".")[0]) + words[word].substring(words[word].indexOf("}") + 1);
 								phrase = null;
 							} else {
 								phrase.push(words[word]);
@@ -297,10 +305,10 @@ function parseFile(file, prefix) {
  * 					with the tag name (excluding the @) and all of the following
  *                  embedded text split by whitespace.
  * @param prefix	The package prefix to append to urls.
- * @param file		The file name to append to urls.
+ * @param fileName	The file name to append to urls.
  * @return 			A markdown link to append to stuff.
  */
-function parsePhrase(phrase, prefix, file) {
+function parsePhrase(phrase, prefix, fileName) {
 	let tag = phrase.shift();
 	if ((tag == "see" || tag == "link") && phrase.length == 2) {
 		let strings = phrase.shift().split("#");
@@ -310,10 +318,10 @@ function parsePhrase(phrase, prefix, file) {
 		else if (prefix && prefix.length > 0)
 			prefixes = prefix.split(".");
 
-		if (file)
-			prefixes.push(file.split(".")[0]);
+		if (fileName)
+			prefixes.push(fileName);
 		
-		return "[" + phrase.join(" ")  + "](" + prefixes.join(".") + "#" + strings[1] + ")";
+		return "[" + phrase.join(" ")  + "](" + prefixes.join("/") + "#" + strings[1] + ")";
 	} else {
 		phrase.shift();
 		return phrase.join(" ");
