@@ -1,6 +1,8 @@
 # Markdown JavaDoc API
 
-The [`mdjavadoc-api`](https://www.npmjs.com/package/mdjavadoc-api) contains five methods, documented below. Yes, this program does indeed write its own documentation. Information about the accepted parameters and the behavior of these functions can be found in the [project README](https://jfenn.me/redirects/?t=github&d=mdjavadoc).
+The [`mdjavadoc-api`](https://www.npmjs.com/package/mdjavadoc-api) contains five methods, documented below. Information about the accepted parameters and the behavior of these functions can be found in the [project README](https://jfenn.me/redirects/?t=github&d=mdjavadoc).
+
+Yes, this program has indeed written its own documentation.
 
 ## [generateMarkdownFiles](./index.js#L24)
 
