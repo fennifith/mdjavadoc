@@ -2,7 +2,44 @@
 
 The [`mdjavadoc-api`](https://www.npmjs.com/package/mdjavadoc-api) contains five methods, documented below. Information about the accepted parameters and the behavior of these functions can be found in the [project README](https://jfenn.me/redirects/?t=github&d=mdjavadoc).
 
-Yes, this program has indeed written its own documentation.
+### Installation
+
+This is fairly simple.
+
+```shell
+npm install mdjavadoc-api
+```
+
+### Usage
+
+Using the API in your application is pretty easy. For example, this program will parse the file "index.js" and output the resulting markdown to "out.md":
+
+```javascript
+const _mdjd = require('mdjavadoc-api');
+_mdjd.generateMarkdownFile("index.js", "out.md");
+```
+
+Another example, this one simply parses "index.js" and prints the parsed data in the console:
+
+```javascript
+const _mdjd = require('mdjavadoc-api');
+console.log(_mdjd.parseFile("index.js"));
+```
+
+#### Options
+
+The `options` argument is simply an object containing optional arguments which can change the result of the program. These options function as stated below:
+
+| Option Name  | Type    | Description |
+|--------------|---------|-------------|
+| reg          | RegExp  | A regular expression to filter out unwanted files (defaults to `/^(?!\.).*/`, or "any file that does not begin with a `.`"). |
+| extensions   | boolean | Whether to include the file extensions in the generated content (setting this to true will name files "ClassName.java.md" instead of just "ClassName.md") |
+| sourcePrefix | string  | A string to start all source code URLs with. Defaults to "../blob/master". For example, a link to "/api/index.js#L50" will become "../blob/master/api/index.js#L50". |
+| isPublic     | boolean | Whether to ignore javadocs for non-public methods/fields/whatever. |
+
+# Documentation
+
+Yes, this program has written its own documentation.
 
 ## [generateMarkdownFiles](./index.js#L24)
 
