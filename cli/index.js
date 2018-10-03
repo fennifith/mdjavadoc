@@ -6,11 +6,11 @@ const _program = require('commander');
 const _api = require(_path.resolve("../api/index.js"));
 
 _program.version("1.0.0", '-v --version')
-	.option('--filter [expression]', "File name filter.")
-	.option('--prefix [url]', "Source code prefix.")
-	.option('-e --extensions', "Generate files with extensions.")
-	.option('-o --output [path]', "Location to store generated files in.")
-	.option('-f --file [file]', "A specific file to parse.");
+	.option('-o --output [path]', "location to store generated files in")
+	.option('-f --file [file]', "a specific file to parse")
+	.option('--filter [expression]', "file name filter")
+	.option('--prefix [url]', "source code prefix")
+	.option('-e --extensions', "generate files with extensions");
 
 _program.parse(process.argv);
 
