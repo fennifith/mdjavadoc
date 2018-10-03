@@ -300,7 +300,7 @@ function parseFile(file, prefix, options) {
 	return docs;
 }
 
-/**
+/*
  * Parses an embedded tag (usually enclosed in brackets) and returns the
  * markdown-formatted result. This currently only works with "@see" and
  * "@link" tags. The URL of the formatted link is the similar as the format
@@ -334,7 +334,7 @@ function parsePhrase(phrase, prefix, fileName) {
 	}
 }
 
-/**
+/*
  * Calculates the line number of the specified index in a string.
  *
  * @param content 	The full content of the file.
