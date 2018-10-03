@@ -28,7 +28,7 @@ console.log(_mdjd.parseFile("index.js"));
 
 #### Options
 
-The `options` argument is simply an object containing optional arguments which can change the result of the program. These options function as stated below:
+The `options` argument on each method is simply an object containing optional arguments which can change the result of the program. These options function as stated below:
 
 | Option Name  | Type    | Description |
 |--------------|---------|-------------|
