@@ -40,9 +40,19 @@ function generateMarkdownFilesRecursive(data, out, prefix, options) {
 		options = {};
 
 	for (let item in data) {
-		if (Array.isArray(data[item]))
-			generateMarkdownFilesRecursive(data[item], out, (prefix ? prefix + "." : "") + item, options);
-		else _fs.writeFileSync(_path.resolve(out + "/" + prefix.split(".").join("/") + "/" + item), formMarkdown(data[item], options));
+		if (Array.isArray(data[item])) {
+			let path = out;
+			if (prefix) {
+				prefix.split(".").forEach((dir) => {
+					path += "/" + dir;
+					let resolved = _path.resolve(path);
+					if (!_fs.existsSync(resolved))
+						_fs.mkdirSync(resolved);
+				});
+			}
+			
+			_fs.writeFileSync(_path.resolve(path + "/" + (options.extensions ? item : item.split(".")[0]) + ".md"), formMarkdown(data[item], options));
+		} else generateMarkdownFilesRecursive(data[item], out, (prefix ? prefix + "." : "") + item, options);
 	}
 }
 
@@ -79,6 +89,8 @@ function formMarkdown(data, options) {
 	let markdown = "";
 	
 	for (let i in data) {
+		if (!data[i].type)
+			console.log(data[i]);
 		if (data[i].type.includes("public") || !options.isPublic) {
 			if (data[i].type.includes("class"))
 				markdown += "# ";
@@ -132,7 +144,7 @@ function parseDirectory(dir, prefix, reg) {
 		if (stat.isDirectory())
 			object[filename] = parseDirectory(filename, currentDir.substring(2).split("/").join("."), reg);
 		else if (stat.isFile() && (!reg || reg.test(filename)))
-			object[filename.split(".")[0]] = parseFile(filename, currentDir.substring(2).split("/").join("."));
+			object[filename] = parseFile(filename, currentDir.substring(2).split("/").join("."));
 	});
 	
 	return object;
