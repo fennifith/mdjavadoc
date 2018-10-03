@@ -7,7 +7,7 @@ const tags = {
 	author: ["Name"],
 	version: ["Current Version"],
 	param: ["Parameter Name", "Description"],
-	"return": ["Return Value"],
+	"return": ["Returned Value"],
 	exception: ["Exception", "Description"],
 	throws: ["Exception", "Description"],
 	see: ["Reference"],
@@ -19,10 +19,83 @@ const tags = {
 const _path = require("path");
 const _fs = require("fs");
 
+
+/**
+ * Generates a set of markdown docs from the files in a directory.
+ * 
+ * @param dir		The directory to generate the docs from.
+ * @param out		The directory in which to place generated files.
+ * @param options	Optional arguments.
+ */
+function generateMarkdownFiles(dir, out, options) {
+	
+}
+
+/**
+ * Generates a markdown doc from the specified file.
+ * 
+ * @param file		The file to generate the docs from.
+ * @param out		The file to output the markdown into.
+ * @param options	Optional arguments.
+ */
+function generateMarkdownFile(file, out, options) {
+	
+}
+
+/**
+ * Form basic markdown from an array of parsed data.
+ * 
+ * @param data 		The parsed data (returned by {@link parseFile})
+ * 					to generate markdown from.
+ * @param options	Optional arguments.
+ * @return 			A string of the markdown formatted docs.
+ */
+function formMarkdown(data, options) {
+	if (!options)
+		options = {};
+		
+	if (!options.sourcePrefix)
+		options.sourcePrefix = "../blob/master";
+		
+	let markdown = "";
+	
+	for (let i in data) {
+		if (data[i].type.includes("public") || !options.isPublic) {
+			if (data[i].type.includes("class"))
+				markdown += "# ";
+			else markdown += "## ";
+			markdown += "[" + data[i].name + "](" + options.sourcePrefix + data[i].source + ")" + "\n\n";
+			
+			if (data[i].type.length > 0)
+				markdown += "**Types:** `" + data[i].type.join("` `") + "`\n\n";
+			
+			markdown += data[i].description + "\n";
+			
+			for (let tag in tags) {
+				if (data[i][tag] && data[i][tag].length > 0) {
+					let isTable = tags[tag].length > 1;
+					if (isTable) {
+						markdown += "|" + tags[tag].join("|") + "|";
+						markdown += "|" + "-----|".repeat(tags[tag].length);
+					} else markdown += "#### " + tags[tag][0] + "\n\n";
+					
+					for (let item in data[i][tag]) {
+						if (isTable)
+							markdown += "|" + item.values.join("|") + "|";
+						else markdown += item.values[0] + "\n\n";
+					}
+				}
+			}
+		}
+	}
+	
+	return markdown;
+}
+
 /**
  * Parses docs for all of the files in a directory.
  * 
- * @param dir 		The starting directory to generate files from.
+ * @param dir 		The starting directory to parse files from.
  * @param prefix 	Internally used prefix to append to package names.
  * @param reg		A regex statement to match file names to.
  * @return 			An array of the docs fetched from each file.
