@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 'use strict';
 
 const DEFAULT_SOURCE_PREFIX = "../blob/master";
