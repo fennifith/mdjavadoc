@@ -28,7 +28,22 @@ const _fs = require("fs");
  * @param options	Optional arguments.
  */
 function generateMarkdownFiles(dir, out, options) {
-	
+	if (!options)
+		options = {};
+
+	let data = parseDirectory(dir, null, options.reg);
+	generateMarkdownFilesRecursive(data, out, null, options);
+}
+
+function generateMarkdownFilesRecursive(data, out, prefix, options) {
+	if (!options)
+		options = {};
+
+	for (let item in data) {
+		if (Array.isArray(data[item]))
+			generateMarkdownFilesRecursive(data[item], out, (prefix ? prefix + "." : "") + item, options);
+		else _fs.writeFileSync(_path.resolve(out + "/" + prefix.split(".").join("/") + "/" + item), formMarkdown(data[item], options));
+	}
 }
 
 /**
@@ -39,7 +54,11 @@ function generateMarkdownFiles(dir, out, options) {
  * @param options	Optional arguments.
  */
 function generateMarkdownFile(file, out, options) {
+	if (!options)
+		options = {};
 	
+	let markdown = formMarkdown(parseFile(file, options.prefix), options);
+	_fs.writeFileSync(_path.resolve(out), markdown);
 }
 
 /**
@@ -75,17 +94,19 @@ function formMarkdown(data, options) {
 				if (data[i][tag] && data[i][tag].length > 0) {
 					let isTable = tags[tag].length > 1;
 					if (isTable) {
-						markdown += "|" + tags[tag].join("|") + "|";
-						markdown += "|" + "-----|".repeat(tags[tag].length);
-					} else markdown += "#### " + tags[tag][0] + "\n\n";
+						markdown += "\n|" + tags[tag].join("|") + "|\n";
+						markdown += "|" + "-----|".repeat(tags[tag].length) + "\n";
+					} else markdown += "\n#### " + tags[tag][0] + "\n\n";
 					
 					for (let item in data[i][tag]) {
 						if (isTable)
-							markdown += "|" + item.values.join("|") + "|";
-						else markdown += item.values[0] + "\n\n";
+							markdown += "|" + data[i][tag][item].values.join("|") + "|\n";
+						else markdown += data[i][tag][item].values[0] + "\n\n";
 					}
 				}
 			}
+
+			markdown += "\n";
 		}
 	}
 	
@@ -221,10 +242,8 @@ function parseFile(file, prefix) {
 					else object.values[object.values.length - 1] += " " + words[word];
 				}
 			} else {
-				if (line.trim().length == 0)
-					doc.description += "\n";
-				else {
-					let words = line.trim().split(/[ \t]{1,}/g);
+				if (line.trim().length > 0) {
+					let words = line.trim().split(/[ \t]{1,}/g);					
 					let phrase = null;
 					for (let word in words) {
 						if (phrase !== null) {
@@ -242,6 +261,8 @@ function parseFile(file, prefix) {
 						}
 					}
 				}
+
+				doc.description += "\n";
 			}
 		}
 
@@ -304,3 +325,6 @@ function getLineNumber(content, index) {
 
 module.exports.parseDirectory = parseDirectory;
 module.exports.parseFile = parseFile;
+module.exports.formMarkdown = formMarkdown;
+module.exports.generateMarkdownFile = generateMarkdownFile;
+module.exports.generateMarkdownFiles = generateMarkdownFiles;
