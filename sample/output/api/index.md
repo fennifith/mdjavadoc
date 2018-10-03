@@ -1,4 +1,4 @@
-## [tags](../blob/master/teststructure/index.js#L2)
+## [tags](../blob/masterapi/.//api/index.js#L2)
 
 **Type:** `const`
 
@@ -7,7 +7,7 @@ in the parsed javadocs to use. These are useful for building
 table layouts from the resulting data. 
 
 
-## [generateMarkdownFiles](../blob/master/teststructure/index.js#L24)
+## [generateMarkdownFiles](../blob/masterapi/.//api/index.js#L24)
 
 **Type:** `function`
 
@@ -21,7 +21,7 @@ Generates a set of markdown docs from the files in a directory.
 |out|The directory in which to place generated files.|
 |options|Optional arguments.|
 
-## [generateMarkdownFile](../blob/master/teststructure/index.js#L50)
+## [generateMarkdownFile](../blob/masterapi/.//api/index.js#L62)
 
 **Type:** `function`
 
@@ -35,7 +35,7 @@ Generates a markdown doc from the specified file.
 |out|The file to output the markdown into.|
 |options|Optional arguments.|
 
-## [formMarkdown](../blob/master/teststructure/index.js#L65)
+## [formMarkdown](../blob/masterapi/.//api/index.js#L77)
 
 **Type:** `function`
 
@@ -51,7 +51,7 @@ Form basic markdown from an array of parsed data.
 **Returned Value:**  A string of the markdown formatted docs.
 
 
-## [parseDirectory](../blob/master/teststructure/index.js#L117)
+## [parseDirectory](../blob/masterapi/.//api/index.js#L131)
 
 **Type:** `function`
 
@@ -68,7 +68,7 @@ Parses docs for all of the files in a directory.
 **Returned Value:**  An array of the docs fetched from each file.
 
 
-## [parseFile](../blob/master/teststructure/index.js#L142)
+## [parseFile](../blob/masterapi/.//api/index.js#L154)
 
 **Type:** `function`
 
@@ -97,7 +97,7 @@ values: ["somethingelse", "The thing for the stuff."]
 ``` 
 
 The full list of tags that are included in this object can 
-be found [here](.teststructure.index#tags).
+be found [here](api.index#tags).
 
 
 
@@ -109,7 +109,7 @@ be found [here](.teststructure.index#tags).
 **Returned Value:**  An array of the parsed docs for the file.
 
 
-## [parsePhrase](../blob/master/teststructure/index.js#L276)
+## [parsePhrase](../blob/masterapi/.//api/index.js#L290)
 
 **Type:** `function`
 
@@ -130,7 +130,7 @@ used in the javadoc, making the returned value something like
 **Returned Value:**  A markdown link to append to stuff.
 
 
-## [getLineNumber](../blob/master/teststructure/index.js#L310)
+## [getLineNumber](../blob/masterapi/.//api/index.js#L324)
 
 **Type:** `function`
 
