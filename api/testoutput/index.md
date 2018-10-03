@@ -1,6 +1,6 @@
 ## [tags](../blob/master/teststructure/index.js#L2)
 
-**Types:** `const`
+**Type:** `const`
 
 Specifies a template for all of the tags ("@something") 
 in the parsed javadocs to use. These are useful for building 
@@ -9,7 +9,7 @@ table layouts from the resulting data.
 
 ## [generateMarkdownFiles](../blob/master/teststructure/index.js#L24)
 
-**Types:** `function`
+**Type:** `function`
 
 Generates a set of markdown docs from the files in a directory. 
 
@@ -23,7 +23,7 @@ Generates a set of markdown docs from the files in a directory.
 
 ## [generateMarkdownFile](../blob/master/teststructure/index.js#L50)
 
-**Types:** `function`
+**Type:** `function`
 
 Generates a markdown doc from the specified file. 
 
@@ -37,7 +37,7 @@ Generates a markdown doc from the specified file.
 
 ## [formMarkdown](../blob/master/teststructure/index.js#L65)
 
-**Types:** `function`
+**Type:** `function`
 
 Form basic markdown from an array of parsed data. 
 
@@ -48,14 +48,12 @@ Form basic markdown from an array of parsed data.
 |data|The parsed data (returned by  to generate markdown from.|
 |options|Optional arguments.|
 
-#### Returned Value
-
- A string of the markdown formatted docs.
+**Returned Value:**  A string of the markdown formatted docs.
 
 
 ## [parseDirectory](../blob/master/teststructure/index.js#L117)
 
-**Types:** `function`
+**Type:** `function`
 
 Parses docs for all of the files in a directory. 
 
@@ -67,14 +65,12 @@ Parses docs for all of the files in a directory.
 |prefix|Internally used prefix to append to package names.|
 |reg|A regex statement to match file names to.|
 
-#### Returned Value
-
- An array of the docs fetched from each file.
+**Returned Value:**  An array of the docs fetched from each file.
 
 
 ## [parseFile](../blob/master/teststructure/index.js#L142)
 
-**Types:** `function`
+**Type:** `function`
 
 Parses the docs in a specific file. Docs are formatted 
 as follows: 
@@ -110,14 +106,12 @@ be found [here](.teststructure.index#tags).
 |file|The file to parse docs from.|
 |prefix|The prefix to add to the doc packages.|
 
-#### Returned Value
-
- An array of the parsed docs for the file.
+**Returned Value:**  An array of the parsed docs for the file.
 
 
 ## [parsePhrase](../blob/master/teststructure/index.js#L276)
 
-**Types:** `function`
+**Type:** `function`
 
 Parses an embedded tag (usually enclosed in brackets) and returns the 
 markdown-formatted result. This currently only works with "@see" and 
@@ -133,14 +127,12 @@ used in the javadoc, making the returned value something like
 |prefix|The package prefix to append to urls.|
 |file|The file name to append to urls.|
 
-#### Returned Value
-
- A markdown link to append to stuff.
+**Returned Value:**  A markdown link to append to stuff.
 
 
 ## [getLineNumber](../blob/master/teststructure/index.js#L310)
 
-**Types:** `function`
+**Type:** `function`
 
 Calculates the line number of the specified index in a string. 
 
@@ -151,8 +143,6 @@ Calculates the line number of the specified index in a string.
 |content|The full content of the file.|
 |index|The index of the character to get the line num of.|
 
-#### Returned Value
-
- The line number of the specified index.
+**Returned Value:**  The line number of the specified index.
 
 

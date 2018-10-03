@@ -98,7 +98,7 @@ function formMarkdown(data, options) {
 			markdown += "[" + data[i].name + "](" + options.sourcePrefix + data[i].source + ")" + "\n\n";
 			
 			if (data[i].type.length > 0)
-				markdown += "**Types:** `" + data[i].type.join("` `") + "`\n\n";
+				markdown += "**Type:** `" + data[i].type.join("` `") + "`\n\n";
 			
 			markdown += data[i].description + "\n";
 			
@@ -108,7 +108,7 @@ function formMarkdown(data, options) {
 					if (isTable) {
 						markdown += "\n|" + tags[tag].join("|") + "|\n";
 						markdown += "|" + "-----|".repeat(tags[tag].length) + "\n";
-					} else markdown += "\n#### " + tags[tag][0] + "\n\n";
+					} else markdown += "\n**" + tags[tag][0] + ":** ";
 					
 					for (let item in data[i][tag]) {
 						if (isTable)
