@@ -42,33 +42,33 @@ public static Object doTheThing(int something, String[] stuff) {
 
 ##### Data
 
-```json
+```javascript
 [
-	{
-		name: "doTheThing",
-		description: "This is a method which does a thing with something and stuff.",
-		type: ["public", "static", "void"],
-		source: "/package/structure/ClassName.java#L2",
-		param: [
-			{
-				content: "@param something\tThis is something.",
-				template: ["Parameter Name", "Description"],
-				values: ["something", "This is something."]
-			},
-			{
-				content: "@param stuff\t\tThis is a bunch of stuff.",
-				template: ["Parameter Name", "Description"],
-				values: ["stuff", "This is a bunch of stuff."]
-			}
-		],
-		return: [
-			{
-				content: "@return\t\tA thing.",
-				template: ["Returned Value"],
-				values: ["A thing."]
-			}
-		]
-	}
+  {
+    name: "doTheThing",
+    description: "This is a method which does a thing with something and stuff.",
+    type: ["public", "static", "void"],
+    source: "/package/structure/ClassName.java#L2",
+    param: [
+      {
+        content: "@param something\tThis is something.",
+        template: ["Parameter Name", "Description"],
+        values: ["something", "This is something."]
+      },
+      {
+        content: "@param stuff\t\tThis is a bunch of stuff.",
+        template: ["Parameter Name", "Description"],
+        values: ["stuff", "This is a bunch of stuff."]
+      }
+    ],
+    return: [
+      {
+        content: "@return\t\tA thing.",
+        template: ["Returned Value"],
+        values: ["A thing."]
+      }
+    ]
+  }
 ]
 ```
 
@@ -95,7 +95,7 @@ Aside from an input and output file/directory, the script has several options wh
 
 | Option Name  | Type    | Description |
 |--------------|---------|-------------|
-| reg          | RegExp  | A regular expression to filter out unwanted files (defaults to `/^(?!\.).*/` or "any file that does not begin with a '.'"). |
+| reg          | RegExp  | A regular expression to filter out unwanted files (defaults to `/^(?!\.).*/`, or "any file that does not begin with a `.`"). |
 | extensions   | boolean | Whether to include the file extensions in the generated content (setting this to true will name files "ClassName.java.md" instead of just "ClassName.md") |
 | sourcePrefix | string  | A string to start all source code URLs with. Defaults to "../blob/master". For example, a link to "/api/index.js#L50" will become "../blob/master/api/index.js#L50". |
 
