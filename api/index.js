@@ -24,10 +24,24 @@ const _fs = require("fs");
  * 
  * @param dir 		The starting directory to generate files from.
  * @param prefix 	Internally used prefix to append to package names.
+ * @param reg		A regex statement to match file names to.
  * @return 			An array of the docs fetched from each file.
  */
-function parseDirectory(dir, prefix) {
+function parseDirectory(dir, prefix, reg) {
+	if (!prefix)
+		prefix = "";
 	
+	let object = {};
+	let currentDir = "./" + prefix.split(".").join("/") + "/" + dir;
+	_fs.readdirSync(_path.resolve(currentDir)).forEach((filename) => {
+		let stat = _fs.lstatSync(_path.resolve(currentDir + "/" + filename));
+		if (stat.isDirectory())
+			object[filename] = parseDirectory(filename, currentDir.substring(2).split("/").join("."), reg);
+		else if (stat.isFile() && (!reg || reg.test(filename)))
+			object[filename.split(".")[0]] = parseFile(filename, currentDir.substring(2).split("/").join("."));
+	});
+	
+	return object;
 }
 
 /**
@@ -38,7 +52,7 @@ function parseDirectory(dir, prefix) {
  * {
  *   name: "methodName",
  *   description: "This method does a thing with something and somethingelse.",
- *   type: "method", // either "field", "method", "class", or "interface",
+ *   type: ["function"], // basically an array of anything that comes before the method name
  *   source: "/package/structure/ClassName.java#L247",
  *   param: [ // all tags are added to the map
  *     {
@@ -68,7 +82,7 @@ function parseFile(file, prefix) {
 	
 	let docs = [];
 
-	let content = _fs.readFileSync(_path.resolve(file), "utf8");
+	let content = _fs.readFileSync("./" + _path.resolve(prefix.split(".").join("/") + "/" + file), "utf8");
 	let reg = /(?<=\/\*\*)([\s\S]*?)(?=\*\/)/g;
 	let match;
 	while ((match = reg.exec(content)) !== null) {
