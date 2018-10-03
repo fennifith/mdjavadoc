@@ -3,7 +3,7 @@
 
 const _path = require('path');
 const _program = require('commander');
-const _api = require(_path.resolve("../api/index.js"));
+const _api = require('mdjavadoc-api');
 
 _program.version("1.0.0", '-v --version')
 	.option('-o --output [path]', "location to store generated files in")
