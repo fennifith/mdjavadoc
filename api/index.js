@@ -22,9 +22,9 @@ const _fs = require("fs");
 /**
  * Parses docs for all of the files in a directory.
  * 
- * @param dir The starting directory to generate files from.
- * @param prefix Internally used prefix to append to package names.
- * @return An array of the docs fetched from each file.
+ * @param dir 		The starting directory to generate files from.
+ * @param prefix 	Internally used prefix to append to package names.
+ * @return 			An array of the docs fetched from each file.
  */
 function parseDirectory(dir, prefix) {
 	
@@ -58,9 +58,9 @@ function parseDirectory(dir, prefix) {
  * The full list of tags that are included in this object can
  * be found {@link #tags here}.
  * 
- * @param file The file to parse docs from.
- * @param prefix The prefix to add to the doc packages.
- * @return An array of the parsed docs for the file.
+ * @param file 		The file to parse docs from.
+ * @param prefix 	The prefix to add to the doc packages.
+ * @return 			An array of the parsed docs for the file.
  */
 function parseFile(file, prefix) {
 	if (!prefix)
@@ -107,7 +107,7 @@ function parseFile(file, prefix) {
 						if (phrase) {
 							if (words[word].endsWith("}")) {
 								phrase.push(words[word].substring(0, words[word].length - 1));
-								object.values[object.values.length - 1] += " " + parsePhrase(phrase, prefix);
+								object.values[object.values.length - 1] += " " + parsePhrase(phrase, prefix, file);
 								phrase = null;
 							} else {
 								phrase.push(words[word]);
@@ -143,7 +143,7 @@ function parseFile(file, prefix) {
 						if (phrase !== null) {
 							if (words[word].includes("}")) {
 								phrase.push(words[word].substring(0, words[word].indexOf("}")));
-								doc.description += parsePhrase(phrase, prefix) + words[word].substring(words[word].indexOf("}") + 1);
+								doc.description += parsePhrase(phrase, prefix, file) + words[word].substring(words[word].indexOf("}") + 1);
 								phrase = null;
 							} else {
 								phrase.push(words[word]);
@@ -164,16 +164,46 @@ function parseFile(file, prefix) {
 	return docs;
 }
 
-function parsePhrase(phrase, prefix) {
-	return "PHRASE";
+/**
+ * Parses an embedded tag (usually enclosed in brackets) and returns the
+ * markdown-formatted result. This currently only works with "@see" and
+ * "@link" tags. The URL of the formatted link is the similar as the format
+ * used in the javadoc, making the returned value something like
+ * `[this](package.name.api#parsePhrase)`.
+ * 
+ * @param phrase	An array of the values of the embedded tag, starting
+ * 					with the tag name (excluding the @) and all of the following
+ *                  embedded text split by whitespace.
+ * @param prefix	The package prefix to append to urls.
+ * @param file		The file name to append to urls.
+ * @return 			A markdown link to append to stuff.
+ */
+function parsePhrase(phrase, prefix, file) {
+	let tag = phrase.shift();
+	if ((tag == "see" || tag == "link") && phrase.length == 2) {
+		let strings = phrase.shift().split("#");
+		let prefixes = [];
+		if (strings[0].length > 0)
+			prefixes = strings[0].split(".");
+		else if (prefix && prefix.length > 0)
+			prefixes = prefix.split(".");
+
+		if (file)
+			prefixes.push(file.split(".")[0]);
+		
+		return "[" + phrase.join(" ")  + "](" + prefixes.join(".") + "#" + strings[1] + ")";
+	} else {
+		phrase.shift();
+		return phrase.join(" ");
+	}
 }
 
 /**
  * Calculates the line number of the specified index in a string.
  *
- * @param content The full content of the file.
- * @param index The index of the character to get the line num of.
- * @return The line number of the specified index.
+ * @param content 	The full content of the file.
+ * @param index 	The index of the character to get the line num of.
+ * @return 			The line number of the specified index.
  */
 function getLineNumber(content, index) {
 	let line = 1;
