@@ -33,7 +33,7 @@ The program works by searching a set of files for [javadoc comments](https://www
  * 
  * @param something		This is something.
  * @param stuff			This is a bunch of stuff.
- * @return				A thing.
+ * @return			A thing.
  */
 public static Object doTheThing(int something, String[] stuff) {
 	return null;
