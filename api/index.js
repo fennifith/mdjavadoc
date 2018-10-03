@@ -34,6 +34,18 @@ function generateMarkdownFiles(dir, out, options) {
 	if (!options)
 		options = {};
 
+	if (!_fs.existsSync(_path.resolve(out))) {
+		let paths = out.split("/");
+		let path = [];
+		for (let i in paths) {
+			path.push(paths[i]);
+			
+			let resolved = _path.resolve(path.join("/"));
+			if (!_fs.existsSync(resolved))
+				_fs.mkdirSync(resolved);
+		}
+	}
+	
 	let data = parseDirectory(dir, null, options);
 	generateMarkdownFilesRecursive(data, out, null, options);
 }
