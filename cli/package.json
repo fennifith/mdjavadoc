@@ -3,19 +3,16 @@
   "version": "1.0.0",
   "description": "A script that generates markdown javadocs for use in Jekyll and GitHub Pages.",
   "main": "index.js",
+  "bin": "./index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/TheAndroidMaster/mdjavadoc.git"
-  },
-  "author": "James Fenn <18jafenn90@gmail.com> (https://jfenn.me/)",
+  "repository": "TheAndroidMaster/mdjavadoc",
+  "author": "James Fenn <dev@jfenn.me> (https://jfenn.me/)",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/TheAndroidMaster/mdjavadoc/issues"
-  },
-  "homepage": "https://github.com/TheAndroidMaster/mdjavadoc#readme",
+  "url": "https://github.com/TheAndroidMaster/mdjavadoc/issues",
+  "homepage": "https://jfenn.me/projects/mdjavadoc",
+  "email": "dev@jfenn.me",
   "dependencies": {
     "commander": "^2.18.0"
   }
