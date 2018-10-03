@@ -10,8 +10,9 @@
     "type": "git",
     "url": "git+https://github.com/TheAndroidMaster/mdjavadoc.git"
   },
-  "author": "James Fenn <18jafenn90@gmail.com> (https://jfenn.me/)",
+  "author": "James Fenn <dev@jfenn.me> (https://jfenn.me/)",
   "license": "MIT",
+  "email": "dev@jfenn.me",
   "bugs": {
     "url": "https://github.com/TheAndroidMaster/mdjavadoc/issues"
   },
