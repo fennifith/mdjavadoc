@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/TheAndroidMaster/mdjavadoc/issues"
   },
-  "homepage": "https://github.com/TheAndroidMaster/mdjavadoc#readme"
+  "homepage": "https://github.com/TheAndroidMaster/mdjavadoc#readme",
+  "dependencies": {
+    "commander": "^2.18.0"
+  }
 }
