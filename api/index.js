@@ -3,11 +3,6 @@
 const DEFAULT_SOURCE_PREFIX = "../blob/master";
 const DEFAULT_REG = /^(?!\.).*/;
 
-/**
- * Specifies a template for all of the tags ("@something")
- * in the parsed javadocs to use. These are useful for building
- * table layouts from the resulting data.
- */
 const tags = {
 	author: ["Name"],
 	version: ["Current Version"],
@@ -93,7 +88,7 @@ function generateMarkdownFile(file, out, options) {
 /**
  * Form basic markdown from an array of parsed data.
  * 
- * @param data 		The parsed data (returned by {@link parseFile})
+ * @param data 		The parsed data (returned by {@link #parseFile})
  * 					to generate markdown from.
  * @param options	Optional arguments.
  * @return 			A string of the markdown formatted docs.
@@ -191,9 +186,6 @@ function parseDirectory(dir, prefix, options) {
  *   ]
  * }
  * ```
- *
- * The full list of tags that are included in this object can
- * be found {@link #tags here}.
  * 
  * @param file 		The file to parse docs from.
  * @param prefix 	The prefix to add to the doc packages.
@@ -313,7 +305,7 @@ function parseFile(file, prefix, options) {
  * markdown-formatted result. This currently only works with "@see" and
  * "@link" tags. The URL of the formatted link is the similar as the format
  * used in the javadoc, making the returned value something like
- * `[this](package.name.api#parsePhrase)`.
+ * `[this](package.name.Class#methodName)`.
  * 
  * @param phrase	An array of the values of the embedded tag, starting
  * 					with the tag name (excluding the @) and all of the following

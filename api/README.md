@@ -2,8 +2,7 @@
 
 The [`mdjavadoc-api`](https://www.npmjs.com/package/mdjavadoc-api) contains five methods, documented below. Yes, this program does indeed write its own documentation. Information about the accepted parameters and the behavior of these functions can be found in the [project README](https://jfenn.me/redirects/?t=github&d=mdjavadoc).
 
-
-## [generateMarkdownFiles](./index.js#L29)
+## [generateMarkdownFiles](./index.js#L24)
 
 **Type:** `function`
 
@@ -17,7 +16,7 @@ Generates a set of markdown docs from the files in a directory.
 |out|The directory in which to place generated files.|
 |options|Optional arguments.|
 
-## [generateMarkdownFile](./index.js#L79)
+## [generateMarkdownFile](./index.js#L74)
 
 **Type:** `function`
 
@@ -31,7 +30,7 @@ Generates a markdown doc from the specified file.
 |out|The file to output the markdown into.|
 |options|Optional arguments.|
 
-## [formMarkdown](./index.js#L94)
+## [formMarkdown](./index.js#L89)
 
 **Type:** `function`
 
@@ -41,13 +40,13 @@ Form basic markdown from an array of parsed data.
 
 |Parameter Name|Description|
 |-----|-----|
-|data|The parsed data (returned by [parseFile](#parseFile)) to generate markdown from.|
+|data|The parsed data (returned by  to generate markdown from.|
 |options|Optional arguments.|
 
 **Returned Value:**  A string of the markdown formatted docs.
 
 
-## [parseDirectory](./index.js#L143)
+## [parseDirectory](./index.js#L138)
 
 **Type:** `function`
 
@@ -64,7 +63,7 @@ Parses docs for all of the files in a directory.
 **Returned Value:**  An array of the docs fetched from each file.
 
 
-## [parseFile](./index.js#L171)
+## [parseFile](./index.js#L166)
 
 **Type:** `function`
 
@@ -72,7 +71,7 @@ Parses the docs in a specific file. Docs are formatted
 as follows: 
 
 ```javascript 
-{
+{ 
 	name: "methodName", 
 	description: "This method does a thing with something and somethingelse.", 
 	type: ["function"], // basically an array of anything that comes before the method name 
@@ -92,12 +91,6 @@ as follows:
 } 
 ``` 
 
-The full list of tags that are included in this object can 
-be found [here](https://jfenn.me/redirects/?t=github&d=mdjavadoc).
-
-The full list of tags that are included in this object can 
-be found [here](https://jfenn.me/redirects/?t=github&d=mdjavadoc).
-
 
 
 |Parameter Name|Description|
@@ -109,7 +102,7 @@ be found [here](https://jfenn.me/redirects/?t=github&d=mdjavadoc).
 **Returned Value:**  An array of the parsed docs for the file.
 
 
-## [parsePhrase](./index.js#L312)
+## [parsePhrase](./index.js#L304)
 
 **Type:** `function`
 
@@ -117,7 +110,7 @@ Parses an embedded tag (usually enclosed in brackets) and returns the
 markdown-formatted result. This currently only works with "@see" and 
 "@link" tags. The URL of the formatted link is the similar as the format 
 used in the javadoc, making the returned value something like 
-`[this](package.name.api#parsePhrase)`. 
+`[this](package.name.Class#methodName)`. 
 
 
 
@@ -128,4 +121,21 @@ used in the javadoc, making the returned value something like
 |fileName|The file name to append to urls.|
 
 **Returned Value:**  A markdown link to append to stuff.
+
+
+## [getLineNumber](./index.js#L338)
+
+**Type:** `function`
+
+Calculates the line number of the specified index in a string. 
+
+
+
+|Parameter Name|Description|
+|-----|-----|
+|content|The full content of the file.|
+|index|The index of the character to get the line num of.|
+
+**Returned Value:**  The line number of the specified index.
+
 
