@@ -30,6 +30,8 @@ const _fs = require("fs");
 function generateMarkdownFiles(dir, out, options) {
 	if (!options)
 		options = {};
+	if (!options.reg)
+		options.reg = /^(?!\.).*/;
 
 	let data = parseDirectory(dir, null, options.reg);
 	generateMarkdownFilesRecursive(data, out, null, options);
@@ -133,18 +135,16 @@ function formMarkdown(data, options) {
  * @param reg		A regex statement to match file names to.
  * @return 			An array of the docs fetched from each file.
  */
-function parseDirectory(dir, prefix, reg) {
-	if (!prefix)
-		prefix = "";
-	
+function parseDirectory(dir, prefix, reg) {	
 	let object = {};
-	let currentDir = "./" + prefix.split(".").join("/") + "/" + dir;
-	_fs.readdirSync(_path.resolve(currentDir)).forEach((filename) => {
-		let stat = _fs.lstatSync(_path.resolve(currentDir + "/" + filename));
-		if (stat.isDirectory())
-			object[filename] = parseDirectory(filename, currentDir.substring(2).split("/").join("."), reg);
-		else if (stat.isFile() && (!reg || reg.test(filename)))
-			object[filename] = parseFile(filename, currentDir.substring(2).split("/").join("."));
+	_fs.readdirSync(_path.resolve(dir)).forEach((filename) => {
+		if (!reg || reg.test(filename)) {
+			let stat = _fs.lstatSync(_path.resolve(dir + "/" + filename));
+			if (stat.isDirectory())
+				object[filename] = parseDirectory(dir + "/" + filename, (prefix ? prefix + "." : "") + filename, reg);
+			else if (stat.isFile())
+				object[filename] = parseFile(dir + "/" + filename, prefix);
+		} else console.log("ignoring " + prefix + "/" + filename);
 	});
 	
 	return object;
@@ -188,7 +188,9 @@ function parseFile(file, prefix) {
 	
 	let docs = [];
 
-	let content = _fs.readFileSync("./" + _path.resolve(prefix.split(".").join("/") + "/" + file), "utf8");
+	let fileNames = file.split("/");
+	let fileName = fileNames[fileNames.length - 1];
+	let content = _fs.readFileSync(_path.resolve(file), "utf8");
 	let reg = /(?<=\/\*\*)([\s\S]*?)(?=\*\/)/g;
 	let match;
 	while ((match = reg.exec(content)) !== null) {
@@ -227,7 +229,7 @@ function parseFile(file, prefix) {
 						if (phrase) {
 							if (words[word].endsWith("}")) {
 								phrase.push(words[word].substring(0, words[word].length - 1));
-								object.values[object.values.length - 1] += " " + parsePhrase(phrase, prefix, file);
+								object.values[object.values.length - 1] += " " + parsePhrase(phrase, prefix, fileName);
 								phrase = null;
 							} else {
 								phrase.push(words[word]);
@@ -261,7 +263,7 @@ function parseFile(file, prefix) {
 						if (phrase !== null) {
 							if (words[word].includes("}")) {
 								phrase.push(words[word].substring(0, words[word].indexOf("}")));
-								doc.description += parsePhrase(phrase, prefix, file) + words[word].substring(words[word].indexOf("}") + 1);
+								doc.description += parsePhrase(phrase, prefix, fileName) + words[word].substring(words[word].indexOf("}") + 1);
 								phrase = null;
 							} else {
 								phrase.push(words[word]);
