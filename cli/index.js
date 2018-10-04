@@ -9,6 +9,7 @@ _program.version("1.0.0", '-v --version')
 	.option('-o --output [path]', "location to store generated files in")
 	.option('-f --file [file]', "a specific file to parse")
 	.option('--filter [expression]', "file name filter")
+	.option('--dirfilter [expression]', "dir name filter")
 	.option('--prefix [url]', "source code prefix")
 	.option('-e --extensions', "generate files with extensions");
 
@@ -21,7 +22,8 @@ if (_program.file) {
 	});
 } else {
 	_api.generateMarkdownFiles(".", _program.output ? _program.output : "docs", {
-		reg: new RegExp(_program.filter),
+		reg: _program.filter ? new RegExp(_program.filter) : null,
+		regdir: _program.dirfilter ? new RegExp(_program.dirfilter) : null,
 		sourcePrefix: _program.prefix,
 		extensions: _program.extensions
 	});

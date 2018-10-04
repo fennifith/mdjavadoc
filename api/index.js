@@ -147,16 +147,16 @@ function parseDirectory(dir, prefix, options) {
 		options = {};
 	if (!options.reg)
 		options.reg = DEFAULT_REG;
+	if (!options.regdir)
+		options.regdir = DEFAULT_REG;
 
 	let object = {};
 	_fs.readdirSync(_path.resolve(dir)).forEach((filename) => {
-		if (options.reg === null || options.reg.test(filename)) {
-			let stat = _fs.lstatSync(_path.resolve(dir + "/" + filename));
-			if (stat.isDirectory())
-				object[filename] = parseDirectory(dir + "/" + filename, (prefix ? prefix + "." : "") + filename, options);
-			else if (stat.isFile())
-				object[filename] = parseFile(dir + "/" + filename, prefix, options);
-		}
+		let stat = _fs.lstatSync(_path.resolve(dir + "/" + filename));
+		if (stat.isDirectory() && (options.regdir === null || options.regdir.test(filename)))
+			object[filename] = parseDirectory(dir + "/" + filename, (prefix ? prefix + "." : "") + filename, options);
+		else if (stat.isFile() && (options.reg === null || options.reg.test(filename)))
+			object[filename] = parseFile(dir + "/" + filename, prefix, options);
 	});
 	
 	return object;

@@ -9,6 +9,7 @@ Options:
   -o --output [path]		location to output generated files in
   -f --file [file]			a specific file to parse
   --filter [expression]		file name filter
+  --dirfilter [expression]	dir name filter
   --prefix [url]			source code prefix
   -e --extensions			generate files with extensions
   -h --help					output usage information
@@ -45,7 +46,7 @@ Since `mdjavadoc`'s default behavior is to parse every file in the current direc
 
 ### `--filter`
 
-This argument can be used to specify a RegEx statement to filter out unwanted files to parse in a directory. This argument defaults to `/^(?!\.).*/`, which will exclude any file name which begins with a ".". If you wanted to exclude all files except those which end in `.java`, you could set this argument to `"/.*(.java)$/"`; likewise for any other file extension.
+This argument can be used to specify a RegEx statement to filter out unwanted files to parse in a directory. This argument defaults to `/^(?!\.).*/`, which will exclude any file name which begins with a ".". If you wanted to exclude all files except those which end in `.java`, you could set this argument to `".*(\\.java)$"`; likewise for any other file extension.
 
 ### `--prefix`
 
