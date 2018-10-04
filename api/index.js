@@ -75,10 +75,19 @@ function generateMarkdownFilesRecursive(data, out, prefix, options) {
 	}
 
 	for (let item in data) {
+		let outs = out.split("/");
+		if (item == outs[outs.length - 1])
+			continue;
+	
 		if (Array.isArray(data[item])) {
 			if (data[item].length > 0) {
-				if (options.breadcrumbs)
-					options.breadcrumbs = prefix.split(".").concat([item]);
+				if (options.breadcrumbs) {
+					options.breadcrumbs = ["."];
+					if (prefix)
+						options.breadcrumbs = options.breadcrumbs.concat(prefix.split("."));
+					
+					options.breadcrumbs = options.breadcrumbs.concat([item]);
+				}
 
 				let fileName = (options.extensions ? item : item.split(".")[0]) + ".md";
 				_fs.writeFileSync(_path.resolve(path + "/" + fileName), formMarkdown(data[item], options));
@@ -95,8 +104,9 @@ function generateMarkdownFilesRecursive(data, out, prefix, options) {
 		}
 	}
 
-	if (out.index && (!options.indexLength || options.indexLength > 0))
-		_fs.writeFileSync(_path.resolve(path + "/" + (out.index.length > 0 ? out.index : DEFAULT_INDEX_FILE)), formIndex(prefix, fileNames, options));
+	if (options.index && (!options.indexLength || options.indexLength > 0))
+		_fs.writeFileSync(_path.resolve(path + "/" + (options.index.length > 0 ? options.index : DEFAULT_INDEX_FILE)), 
+				formIndex(fileNames, prefix, options));
 
 	return fileNames;
 }
@@ -195,15 +205,18 @@ function formBreadcrumbs(breadcrumbs, options) {
  * Forms an index page for the given file names and prefix.
  * 
  * @param fileNames		An array of the files to add to the index.
- * @param prefix		The curret directory, separated by "."s.
+ * @param prefix		The current directory, separated by "."s.
  * @param options		Optional arguments.
  */
 function formIndex(fileNames, prefix, options) {
+	if (!options.indexLength)
+		options.indexLength = DEFAULT_INDEX_LENGTH;
+
 	fileNames = fileNames.slice(); // duplicate array, modifications should not persist
 
 	let markdown = "";
 	if (options.breadcrumbs && prefix && prefix.length > 0) {
-		markdown += formBreadcrumbs(prefix.split("."), options) + "\n\n";
+		markdown += formBreadcrumbs(["."].concat(prefix ? prefix.split(".") : []), options) + "\n\n";
 	}
 	
 	for (let i = 0; i < fileNames.length; i++) {
@@ -213,14 +226,15 @@ function formIndex(fileNames, prefix, options) {
 			indent--;
 			
 		if (!prefix || prefix.length < 1 || indent <= options.indexLength)
-			markdown += "\t".repeat(indent) + "- [" + fileNames[i] + "](" + fileNames[i] + ")\n";
+			markdown += "- [" + fileNames[i] + "](" + fileNames[i] + ")\n";
 		else {
 			let fileName = "";
 			for (let i = 0; i < options.indexLength && i < path.length; i++) {
 				fileName += path[i] + "/";
 			}
 			
-			fileNames.push(fileName);
+			if (!fileNames.includes(fileName))
+				fileNames.push(fileName);
 		}
 	}
 
