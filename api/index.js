@@ -208,24 +208,32 @@ function parseFile(file, prefix, options) {
 	let reg = /(?<=\s\/\*\*\s)([\s\S]*?)(?=\s\*\/\s)/g;
 	let match;
 	while ((match = reg.exec(content)) !== null) {
-		let matchText = match[0].substring(match[0].indexOf("\n") + 1, match[0].lastIndexOf("\n"));
-
+		let matchText = match[0];
 		let startIndex = match.index + match[0].length;
 		startIndex += content.substring(startIndex).indexOf("\n") + 1;
 		let declaration = content.substring(startIndex, startIndex + content.substring(startIndex).indexOf("\n"));
-		declaration = (/([A-Z0-9a-z ]*)/g).exec(declaration)[1].trim().split(" ");
+		let type = [];
+		
+		while (declaration.trim().startsWith("@")) {
+			type = type.concat("@" + (/([A-Z0-9a-z]*)/g).exec(declaration.trim().substring(1))[1]);
+			
+			startIndex += declaration.length + 1;
+			declaration = content.substring(startIndex, startIndex + content.substring(startIndex).indexOf("\n"));
+		}
+		
+		type = type.concat((/([A-Z0-9a-z\. ]*)/g).exec(declaration)[1].trim().split(" "));
 		
 		let doc = {
-			name: declaration.pop(),
+			name: type.pop(),
 			description: "",
-			type: declaration,
+			type: type,
 			source: options.sourcePrefix + "/" + prefix.split(".").join("/") + "/" + fileName + "#L" + getLineNumber(content, match.index)
 		};
 
 		let tag = null;
 		let lines = matchText.split("\n");
 		for (let i in lines) {
-			let line = lines[i].replace(/([ \t]){0,}(\*)( ){0,}/g, "");
+			let line = lines[i].replace(/(\s)*(\*)(\s)*/g, "");
 			if (line.startsWith("@")) {
 				let spaceIndex = line.search(/[ \t]/);
 				tag = line.substring(1, spaceIndex);
@@ -271,7 +279,7 @@ function parseFile(file, prefix, options) {
 				}
 			} else {
 				if (line.trim().length > 0) {
-					let words = line.trim().split(/[ \t]{1,}/g);					
+					let words = line.trim().split(/[\s]{1,}/g);
 					let phrase = null;
 					for (let word in words) {
 						if (phrase !== null) {
