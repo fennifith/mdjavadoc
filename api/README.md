@@ -80,7 +80,7 @@ Form basic markdown from an array of parsed data.
 
 |Parameter Name|Description|
 |-----|-----|
-|data|The parsed data (returned by  to generate markdown from.|
+|data|The parsed data (returned by [parseFile](#parseFile)) to generate markdown from.|
 |options|Optional arguments.|
 
 **Returned Value:**  A string of the markdown formatted docs.

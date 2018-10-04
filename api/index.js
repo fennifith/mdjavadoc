@@ -88,7 +88,7 @@ function generateMarkdownFile(file, out, options) {
 /**
  * Form basic markdown from an array of parsed data.
  * 
- * @param data 		The parsed data (returned by {@link #parseFile})
+ * @param data 		The parsed data (returned by [parseFile](#parseFile))
  * 					to generate markdown from.
  * @param options	Optional arguments.
  * @return 			A string of the markdown formatted docs.
