@@ -1,6 +1,6 @@
 {
   "name": "mdjavadoc",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A script that generates markdown javadocs for use in Jekyll and GitHub Pages.",
   "main": "index.js",
   "bin": "./index.js",
