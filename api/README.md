@@ -38,8 +38,8 @@ The `options` argument on each method is simply an object containing optional ar
 | sourcePrefix    | string           | A string to start all source code URLs with. Defaults to "..". For example, a link to "/api/index.js#L50" will become "../api/index.js#L50". |
 | breadcrumbs     | boolean          | Whether to add "breadcrumbs" to the top of each file for navigation. |
 | breadcrumbsChar | string           | The character to separate breadcrumbs with - defaults to ">". |
-| index           | boolean / string | Whether to generate an index file containing all of the generated docs, and (optionally) the name of the file - defaults to "README.md". |
-| indexDirs       | boolean / string | Whether to also generate index files for individual directories as well, and (optionally) the name of the file - defaults to "README.md". |
+| index           | boolean / string | Whether to generate an index file containing all of the generated docs, and (optionally) the name of the file - defaults to "README.md". By default, this option also generates files for internal directories which look into a smaller amount of folders specified by `indexLength`. |
+| indexLength     | integer          | How many directories internal index files should look into - defaults to 3. Setting this value to 0 disables index files for internal directories. |
 | isPublic        | boolean          | Whether to ignore javadocs for non-public methods/fields/whatever. |
 
 # Documentation
