@@ -1,6 +1,6 @@
 'use strict';
 
-const DEFAULT_SOURCE_PREFIX = "../blob/master";
+const DEFAULT_SOURCE_PREFIX = "..";
 const DEFAULT_REG = /^(?!\.).*/;
 
 const tags = {
