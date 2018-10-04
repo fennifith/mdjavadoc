@@ -1,6 +1,6 @@
 'use strict';
 
-const DEFAULT_SOURCE_PREFIX = "../blob/master";
+const DEFAULT_SOURCE_PREFIX = "..";
 const DEFAULT_REG = /^(?!\.).*/;
 
 const tags = {
@@ -147,16 +147,16 @@ function parseDirectory(dir, prefix, options) {
 		options = {};
 	if (!options.reg)
 		options.reg = DEFAULT_REG;
+	if (!options.regdir)
+		options.regdir = DEFAULT_REG;
 
 	let object = {};
 	_fs.readdirSync(_path.resolve(dir)).forEach((filename) => {
-		if (options.reg === null || options.reg.test(filename)) {
-			let stat = _fs.lstatSync(_path.resolve(dir + "/" + filename));
-			if (stat.isDirectory())
-				object[filename] = parseDirectory(dir + "/" + filename, (prefix ? prefix + "." : "") + filename, options);
-			else if (stat.isFile())
-				object[filename] = parseFile(dir + "/" + filename, prefix, options);
-		}
+		let stat = _fs.lstatSync(_path.resolve(dir + "/" + filename));
+		if (stat.isDirectory() && (options.regdir === null || options.regdir.test(filename)))
+			object[filename] = parseDirectory(dir + "/" + filename, (prefix ? prefix + "." : "") + filename, options);
+		else if (stat.isFile() && (options.reg === null || options.reg.test(filename)))
+			object[filename] = parseFile(dir + "/" + filename, prefix, options);
 	});
 	
 	return object;
@@ -205,27 +205,35 @@ function parseFile(file, prefix, options) {
 	let fileNames = file.split("/");
 	let fileName = fileNames[fileNames.length - 1];
 	let content = _fs.readFileSync(_path.resolve(file), "utf8");
-	let reg = /(?<=\/\*\*)([\s\S]*?)(?=\*\/)/g;
+	let reg = /(?<=\s\/\*\*\s)([\s\S]*?)(?=\s\*\/\s)/g;
 	let match;
 	while ((match = reg.exec(content)) !== null) {
-		let matchText = match[0].substring(match[0].indexOf("\n") + 1, match[0].lastIndexOf("\n"));
-
+		let matchText = match[0];
 		let startIndex = match.index + match[0].length;
 		startIndex += content.substring(startIndex).indexOf("\n") + 1;
 		let declaration = content.substring(startIndex, startIndex + content.substring(startIndex).indexOf("\n"));
-		declaration = (/([A-Z0-9a-z ]*)/g).exec(declaration)[1].trim().split(" ");
+		let type = [];
+		
+		while (declaration.trim().startsWith("@")) {
+			type = type.concat("@" + (/([A-Z0-9a-z]*)/g).exec(declaration.trim().substring(1))[1]);
+			
+			startIndex += declaration.length + 1;
+			declaration = content.substring(startIndex, startIndex + content.substring(startIndex).indexOf("\n"));
+		}
+		
+		type = type.concat((/([A-Z0-9a-z\. ]*)/g).exec(declaration)[1].trim().split(" "));
 		
 		let doc = {
-			name: declaration.pop(),
+			name: type.pop(),
 			description: "",
-			type: declaration,
+			type: type,
 			source: options.sourcePrefix + "/" + prefix.split(".").join("/") + "/" + fileName + "#L" + getLineNumber(content, match.index)
 		};
 
 		let tag = null;
 		let lines = matchText.split("\n");
 		for (let i in lines) {
-			let line = lines[i].replace(/([ \t]){0,}(\*)( ){0,}/g, "");
+			let line = lines[i].replace(/(\s)*(\*)(\s)*/g, "");
 			if (line.startsWith("@")) {
 				let spaceIndex = line.search(/[ \t]/);
 				tag = line.substring(1, spaceIndex);
@@ -271,7 +279,7 @@ function parseFile(file, prefix, options) {
 				}
 			} else {
 				if (line.trim().length > 0) {
-					let words = line.trim().split(/[ \t]{1,}/g);					
+					let words = line.trim().split(/[\s]{1,}/g);
 					let phrase = null;
 					for (let word in words) {
 						if (phrase !== null) {

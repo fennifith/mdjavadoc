@@ -96,6 +96,7 @@ Aside from an input and output file/directory, the script has several options wh
 | Option Name  | Type    | Description |
 |--------------|---------|-------------|
 | reg          | RegExp  | A regular expression to filter out unwanted files (defaults to `/^(?!\.).*/`, or "any file that does not begin with a `.`"). |
+| regdir       | RegExp  | `reg` but for directories. |
 | extensions   | boolean | Whether to include the file extensions in the generated content (setting this to true will name files "ClassName.java.md" instead of just "ClassName.md") |
 | sourcePrefix | string  | A string to start all source code URLs with. Defaults to "../blob/master". For example, a link to "/api/index.js#L50" will become "../blob/master/api/index.js#L50". |
 
