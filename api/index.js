@@ -97,7 +97,7 @@ function generateMarkdownFilesRecursive(data, out, prefix, options) {
 	}
 
 	if (out.indexDirs) {
-		_fs.writeFileSync(_path.resolve(path + "/" + (out.indexDirs.length > 0 ? out.indexDirs : (out.index ? out.index : DEFAULT_INDEX_FILE))), formIndex(prefix, fileNames, options));
+		_fs.writeFileSync(_path.resolve(path + "/" + (out.indexDirs.length > 0 ? out.indexDirs : (out.index && out.index.length > 0 ? out.index : DEFAULT_INDEX_FILE))), formIndex(prefix, fileNames, options));
 	}
 
 	return fileNames;
