@@ -4,6 +4,7 @@ const DEFAULT_SOURCE_PREFIX = "..";
 const DEFAULT_REG = /^(?!\.).*/;
 const DEFAULT_BREADCRUMB_CHAR = ">";
 const DEFAULT_INDEX_FILE = "README.md";
+const DEFAULT_INDEX_LENGTH = 3;
 
 const tags = {
 	author: ["Name"],
@@ -47,8 +48,6 @@ function generateMarkdownFiles(dir, out, options) {
 	
 	let data = parseDirectory(dir, null, options);
 	let files = generateMarkdownFilesRecursive(data, out, null, options);
-	if (options.index)
-		_fs.writeFileSync(out + "/" + (options.index.length > 0 ? options.index : DEFAULT_INDEX_FILE), formIndex(files, null, options));
 }
 
 /*
@@ -96,9 +95,8 @@ function generateMarkdownFilesRecursive(data, out, prefix, options) {
 		}
 	}
 
-	if (out.indexDirs) {
-		_fs.writeFileSync(_path.resolve(path + "/" + (out.indexDirs.length > 0 ? out.indexDirs : (out.index && out.index.length > 0 ? out.index : DEFAULT_INDEX_FILE))), formIndex(prefix, fileNames, options));
-	}
+	if (out.index && (!options.indexLength || options.indexLength > 0))
+		_fs.writeFileSync(_path.resolve(path + "/" + (out.index.length > 0 ? out.index : DEFAULT_INDEX_FILE)), formIndex(prefix, fileNames, options));
 
 	return fileNames;
 }
@@ -201,18 +199,29 @@ function formBreadcrumbs(breadcrumbs, options) {
  * @param options		Optional arguments.
  */
 function formIndex(fileNames, prefix, options) {
+	fileNames = fileNames.slice(); // duplicate array, modifications should not persist
+
 	let markdown = "";
 	if (options.breadcrumbs && prefix && prefix.length > 0) {
 		markdown += formBreadcrumbs(prefix.split("."), options) + "\n\n";
 	}
 	
-	for (let i in fileNames) {
+	for (let i = 0; i < fileNames.length; i++) {
 		let path = fileNames[i].split("/");
 		let indent = path.length;
 		if (path[path.length - 1].length < 1)
 			indent--;
-	
-		markdown += "\t".repeat(indent) + "- [" + fileNames[i] + "](" + fileNames[i] + ")\n";
+			
+		if (!prefix || prefix.length < 1 || indent <= options.indexLength)
+			markdown += "\t".repeat(indent) + "- [" + fileNames[i] + "](" + fileNames[i] + ")\n";
+		else {
+			let fileName = "";
+			for (let i = 0; i < options.indexLength && i < path.length; i++) {
+				fileName += path[i] + "/";
+			}
+			
+			fileNames.push(fileName);
+		}
 	}
 
 	return markdown;
