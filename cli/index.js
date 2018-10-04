@@ -11,7 +11,10 @@ _program.version("1.0.0", '-v --version')
 	.option('--filter [expression]', "file name filter")
 	.option('--dirfilter [expression]', "dir name filter")
 	.option('--prefix [url]', "source code prefix")
-	.option('-e --extensions', "generate files with extensions");
+	.option('--breadcrumbs [char]', "generate breadcrumbs")
+	.option('--index [name]', "generate index files with the given name")
+	.option('--index-length [length]', "number of directories for internal index files to look into")
+	.option('-e --extensions', "include extensions in generated file names");
 
 _program.parse(process.argv);
 
@@ -25,6 +28,10 @@ if (_program.file) {
 		reg: _program.filter ? new RegExp(_program.filter) : null,
 		regdir: _program.dirfilter ? new RegExp(_program.dirfilter) : null,
 		sourcePrefix: _program.prefix,
+		breadcrumbs: _program.breadcrumbs != null,
+		breadcrumbsChar: _program.breadcrumbs instanceof String ? _program.breadcrumbs : null,
+		index: _program.index,
+		indexLength: _program["index-length"],
 		extensions: _program.extensions
 	});
 }
