@@ -212,6 +212,7 @@ function parseFile(file, prefix, options) {
 		let startIndex = match.index + match[0].length;
 		startIndex += content.substring(startIndex).indexOf("\n") + 1;
 		let declaration = content.substring(startIndex, startIndex + content.substring(startIndex).indexOf("\n"));
+		declaration = declaration.replace(/\<(?!\s)((?:(?!\>).)*)(?<!\s)\> /g, "")
 		let type = [];
 		
 		while (declaration.trim().startsWith("@")) {
