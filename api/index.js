@@ -205,7 +205,7 @@ function parseFile(file, prefix, options) {
 	let fileNames = file.split("/");
 	let fileName = fileNames[fileNames.length - 1];
 	let content = _fs.readFileSync(_path.resolve(file), "utf8");
-	let reg = /(?<=\/\*\*)([\s\S]*?)(?=\*\/)/g;
+	let reg = /(?<=\s\/\*\*\s)([\s\S]*?)(?=\s\*\/\s)/g;
 	let match;
 	while ((match = reg.exec(content)) !== null) {
 		let matchText = match[0].substring(match[0].indexOf("\n") + 1, match[0].lastIndexOf("\n"));
