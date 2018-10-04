@@ -30,13 +30,17 @@ console.log(_mdjd.parseFile("index.js"));
 
 The `options` argument on each method is simply an object containing optional arguments which can change the result of the program. These options function as stated below:
 
-| Option Name  | Type    | Description |
-|--------------|---------|-------------|
-| reg          | RegExp  | A regular expression to filter out unwanted files (defaults to `/^(?!\.).*/`, or "any file that does not begin with a `.`"). |
-| regdir       | RegExp  | `reg` but for directories. |
-| extensions   | boolean | Whether to include the file extensions in the generated content (setting this to true will name files "ClassName.java.md" instead of just "ClassName.md") |
-| sourcePrefix | string  | A string to start all source code URLs with. Defaults to "..". For example, a link to "/api/index.js#L50" will become "../api/index.js#L50". |
-| isPublic     | boolean | Whether to ignore javadocs for non-public methods/fields/whatever. |
+| Option Name     | Type             | Description |
+|-----------------|------------------|-------------|
+| reg             | RegExp           | A regular expression to filter out unwanted files (defaults to `/^(?!\.).*/`, or "any file that does not begin with a `.`"). |
+| regdir          | RegExp           | `reg` but for directories. |
+| extensions      | boolean          | Whether to include the file extensions in the generated content (setting this to true will name files "ClassName.java.md" instead of just "ClassName.md") |
+| sourcePrefix    | string           | A string to start all source code URLs with. Defaults to "..". For example, a link to "/api/index.js#L50" will become "../api/index.js#L50". |
+| breadcrumbs     | boolean          | Whether to add "breadcrumbs" to the top of each file for navigation. |
+| breadcrumbsChar | string           | The character to separate breadcrumbs with - defaults to ">". |
+| index           | boolean / string | Whether to generate an index file containing all of the generated docs, and (optionally) the name of the file - defaults to "README.md". |
+| indexDirs       | boolean / string | Whether to also generate index files for individual directories as well, and (optionally) the name of the file - defaults to "README.md". |
+| isPublic        | boolean          | Whether to ignore javadocs for non-public methods/fields/whatever. |
 
 # Documentation
 
