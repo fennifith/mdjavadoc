@@ -238,6 +238,8 @@ function formBreadcrumbs(breadcrumbs, options) {
  * @param options		Optional arguments.
  */
 function formIndex(fileNames, prefix, options) {
+	if (!options)
+		options = {};
 	if (!options.indexLength)
 		options.indexLength = DEFAULT_INDEX_LENGTH;
 
@@ -255,7 +257,7 @@ function formIndex(fileNames, prefix, options) {
 			indent--;
 			
 		if (!prefix || prefix.length < 1 || indent <= options.indexLength)
-			markdown += "- [" + fileNames[i] + "](" + fileNames[i] + ")\n";
+			markdown += "- [" + fileNames[i].split(".")[0] + "](" + (options.indexExtensions ? fileNames[i] : fileNames[i].split(".")[0]) + ")\n";
 		else {
 			let fileName = "";
 			for (let i = 0; i < options.indexLength && i < path.length; i++) {
