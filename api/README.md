@@ -38,10 +38,11 @@ The `options` argument on each method is simply an object containing optional ar
 | extensions      | boolean          | Whether to include the file extensions in the generated content (setting this to true will name files "ClassName.java.md" instead of just "ClassName.md") |
 | sourcePrefix    | string           | A string to start all source code URLs with. Defaults to "..". For example, a link to "/api/index.js#L50" will become "../api/index.js#L50". |
 | breadcrumbs     | boolean          | Whether to add "breadcrumbs" to the top of each file for navigation. |
-| breadcrumbsChar | string           | The character to separate breadcrumbs with - defaults to ">". |
+| breadcrumbsChar | string           | The character to separate breadcrumbs with - defaults to " > ". |
 | index           | boolean / string | Whether to generate an index file containing all of the generated docs, and (optionally) the name of the file - defaults to "README.md". By default, this option also generates files for internal directories which look into a smaller amount of folders specified by `indexLength`. |
 | indexLength     | integer          | How many directories internal index files should look into - defaults to 3. Setting this value to 0 disables index files for internal directories. |
-| isPublic        | boolean          | Whether to ignore javadocs for non-public methods/fields/whatever. |
+| indexExtensions | boolean          | Whether to include file extensions (.md, etc) in index files. |
+| indexTemplate   | file (string)    | A `template` but for index files. Works almost exactly the same way. |
 
 # Documentation
 
