@@ -2,7 +2,7 @@
 
 const DEFAULT_SOURCE_PREFIX = "..";
 const DEFAULT_REG = /^(?!\.).*/;
-const DEFAULT_BREADCRUMB_CHAR = ">";
+const DEFAULT_BREADCRUMB_CHAR = " > ";
 const DEFAULT_INDEX_FILE = "README.md";
 const DEFAULT_INDEX_LENGTH = 3;
 
@@ -222,7 +222,8 @@ function formBreadcrumbs(breadcrumbs, options) {
 
 	let markdown = "#### ";
 	for (let i = 0; i < breadcrumbs.length - 1; i++) {
-		markdown += "[" + breadcrumbs[i] + "](" + "../".repeat(breadcrumbs.length - i - 1) + ") " + options.breadcrumbChar + " ";
+		markdown += "[" + breadcrumbs[i] + "](./" + "../".repeat(breadcrumbs.length - i - 2) 
+				+ (options.index && options.index.length > 0 ? options.index : "") + ")" + options.breadcrumbChar;
 	}
 	
 	return markdown + "**" + breadcrumbs[breadcrumbs.length - 1] + "**";
@@ -243,7 +244,7 @@ function formIndex(fileNames, prefix, options) {
 
 	let markdown = "";
 	if (options.breadcrumbs && prefix && prefix.length > 0) {
-		markdown += formBreadcrumbs(["."].concat(prefix ? prefix.split(".") : []), options) + "\n\n";
+		markdown += formBreadcrumbs(["."].concat(prefix ? prefix.split(".") : []).concat(["/"]), options) + "\n\n";
 	}
 	
 	for (let i = 0; i < fileNames.length; i++) {
