@@ -22,6 +22,30 @@ const tags = {
 const _path = require("path");
 const _fs = require("fs");
 
+/**
+ * Change the template for one of the preset tags. The
+ * default tags are defined as:
+ * 
+ * - author: ["Name"]
+ * - version: ["Current Version"]
+ * - param: ["Parameter Name", "Description"]
+ * - "return": ["Returned Value"]
+ * - exception: ["Exception", "Description"]
+ * - throws: ["Exception", "Description"]
+ * - see: ["Reference"]
+ * - link: ["Reference"]
+ * - since: ["Version"]
+ * - deprecated: ["Deprecation"]
+ * 
+ * @param tag 		The name of the tag (without the leading '@').
+ * @param template	The template to use for the tag (a string array).
+ * @return 			An object containing all of the current tags.
+ */
+function setTag(tag, template) {
+	tags[tag] = template;
+	return tags;
+}
+
 
 /**
  * Generates a set of markdown docs from the files in a directory.
@@ -472,3 +496,4 @@ module.exports.parseFile = parseFile;
 module.exports.formMarkdown = formMarkdown;
 module.exports.generateMarkdownFile = generateMarkdownFile;
 module.exports.generateMarkdownFiles = generateMarkdownFiles;
+module.exports.setTag = setTag;
