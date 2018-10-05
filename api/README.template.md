@@ -32,6 +32,7 @@ The `options` argument on each method is simply an object containing optional ar
 
 | Option Name     | Type             | Description |
 |-----------------|------------------|-------------|
+| template        | file (string)    | Uses the file as a template to generate markdown, replacing occurences of `{{ content }}` with the generated docs. |
 | reg             | RegExp           | A regular expression to filter out unwanted files (defaults to `/^(?!\.).*/`, or "any file that does not begin with a `.`"). |
 | regdir          | RegExp           | `reg` but for directories. |
 | extensions      | boolean          | Whether to include the file extensions in the generated content (setting this to true will name files "ClassName.java.md" instead of just "ClassName.md") |
