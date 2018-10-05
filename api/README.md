@@ -119,7 +119,7 @@ Form basic markdown from an array of parsed data.
 **Returned Value:**  A string of the markdown formatted docs. 
 
 
-## [parseDirectory](https://github.com/TheAndroidMaster/mdjavadoc/blob/master/api//index.js#L272)
+## [parseDirectory](https://github.com/TheAndroidMaster/mdjavadoc/blob/master/api//index.js#L277)
 
 **Type:** `function`
 
@@ -136,7 +136,7 @@ Parses docs for all of the files in a directory.
 **Returned Value:**  An array of the docs fetched from each file. 
 
 
-## [parseFile](https://github.com/TheAndroidMaster/mdjavadoc/blob/master/api//index.js#L300)
+## [parseFile](https://github.com/TheAndroidMaster/mdjavadoc/blob/master/api//index.js#L305)
 
 **Type:** `function`
 
