@@ -53,6 +53,7 @@ function setTag(tag, template) {
  * @param dir		The directory to generate the docs from.
  * @param out		The directory in which to place generated files.
  * @param options	Optional arguments.
+ * @return 			An array of the generated files.
  */
 function generateMarkdownFiles(dir, out, options) {
 	if (!options)
@@ -71,7 +72,7 @@ function generateMarkdownFiles(dir, out, options) {
 	}
 	
 	let data = parseDirectory(dir, null, options);
-	let files = generateMarkdownFilesRecursive(data, out, null, options);
+	return generateMarkdownFilesRecursive(data, out, null, options);
 }
 
 /*
