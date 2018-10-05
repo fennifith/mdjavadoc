@@ -128,7 +128,7 @@ function generateMarkdownFilesRecursive(data, out, prefix, options) {
 		}
 	}
 
-	if (options.index && (!options.indexLength || options.indexLength > 0))
+	if (options.index && (!options.indexLength || options.indexLength > 0) && fileNames.length > 0)
 		_fs.writeFileSync(_path.resolve(path + "/" + (options.index.length > 0 ? options.index : DEFAULT_INDEX_FILE)), 
 				formIndex(fileNames, prefix, options));
 
@@ -223,7 +223,8 @@ function formBreadcrumbs(breadcrumbs, options) {
 	let markdown = "#### ";
 	for (let i = 0; i < breadcrumbs.length - 1; i++) {
 		markdown += "[" + breadcrumbs[i] + "](./" + "../".repeat(breadcrumbs.length - i - 2) 
-				+ (options.index && options.index.length > 0 ? options.index : "") + ")" + options.breadcrumbChar;
+				+ (options.index && options.index.length > 0 ? (options.indexExtensions ? options.index : options.index.split(".")[0]) : "") 
+				+ ")" + options.breadcrumbChar;
 	}
 	
 	return markdown + "**" + breadcrumbs[breadcrumbs.length - 1] + "**";
@@ -265,8 +266,11 @@ function formIndex(fileNames, prefix, options) {
 				fileNames.push(fileName);
 		}
 	}
-
-	return markdown;
+	
+	if (options.indexTemplate) {
+		let template = _fs.readFileSync(_path.resolve(options.indexTemplate), "utf8");
+		return template.replace(/\s\{{2}\s*content\s*\}{2}\s/g, markdown);
+	} else return markdown;
 }
 
 /**
