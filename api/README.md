@@ -46,7 +46,35 @@ The `options` argument on each method is simply an object containing optional ar
 
 Yes, this program has written its own documentation.
 
-## [generateMarkdownFiles](./index.js#L24)
+## [setTag](..//index.js#L26)
+
+**Type:** `function`
+
+Change the template for one of the preset tags. The 
+default tags are defined as: 
+
+- author: ["Name"] 
+- version: ["Current Version"] 
+- param: ["Parameter Name", "Description"] 
+- "return": ["Returned Value"] 
+- exception: ["Exception", "Description"] 
+- throws: ["Exception", "Description"] 
+- see: ["Reference"] 
+- link: ["Reference"] 
+- since: ["Version"] 
+- deprecated: ["Deprecation"] 
+
+
+
+|Parameter Name|Description|
+|-----|-----|
+|tag|The name of the tag (without the leading '@').|
+|template|The template to use for the tag (a string array).|
+
+**Returned Value:**  An object containing all of the current tags. 
+
+
+## [generateMarkdownFiles](..//index.js#L51)
 
 **Type:** `function`
 
@@ -58,9 +86,9 @@ Generates a set of markdown docs from the files in a directory.
 |-----|-----|
 |dir|The directory to generate the docs from.|
 |out|The directory in which to place generated files.|
-|options|Optional arguments.|
+|options|Optional arguments. |
 
-## [generateMarkdownFile](./index.js#L74)
+## [generateMarkdownFile](..//index.js#L139)
 
 **Type:** `function`
 
@@ -72,9 +100,9 @@ Generates a markdown doc from the specified file.
 |-----|-----|
 |file|The file to generate the docs from.|
 |out|The file to output the markdown into.|
-|options|Optional arguments.|
+|options|Optional arguments. |
 
-## [formMarkdown](./index.js#L89)
+## [formMarkdown](..//index.js#L154)
 
 **Type:** `function`
 
@@ -87,10 +115,10 @@ Form basic markdown from an array of parsed data.
 |data|The parsed data (returned by [parseFile](#parseFile)) to generate markdown from.|
 |options|Optional arguments.|
 
-**Returned Value:**  A string of the markdown formatted docs.
+**Returned Value:**  A string of the markdown formatted docs. 
 
 
-## [parseDirectory](./index.js#L138)
+## [parseDirectory](..//index.js#L269)
 
 **Type:** `function`
 
@@ -104,10 +132,10 @@ Parses docs for all of the files in a directory.
 |prefix|Internally used prefix to append to package names.|
 |reg|A regex statement to match file names to.|
 
-**Returned Value:**  An array of the docs fetched from each file.
+**Returned Value:**  An array of the docs fetched from each file. 
 
 
-## [parseFile](./index.js#L166)
+## [parseFile](..//index.js#L297)
 
 **Type:** `function`
 
@@ -116,22 +144,22 @@ as follows:
 
 ```javascript 
 { 
-	name: "methodName", 
-	description: "This method does a thing with something and somethingelse.", 
-	type: ["function"], // basically an array of anything that comes before the method name 
-	source: "/package/structure/ClassName.java#L247", 
-	param: [ // all tags are added to the map 
-		{ 
-			content: "@param something The thing for the stuff.", 
-			template: ["Parameter Name", "Description"], 
-			values: ["something", "The thing for the stuff."] 
-		}, 
-		{ 
-			content: "@param somethingelse The other thing for the stuff.", 
-			template: ["Parameter Name", "Description"], 
-			values: ["somethingelse", "The thing for the stuff."] 
-		} 
-	] 
+  name: "methodName", 
+  description: "This method does a thing with something and somethingelse.", 
+  type: ["function"], // basically an array of anything that comes before the method name 
+  source: "/package/structure/ClassName.java#L247", 
+  param: [ // all tags are added to the map 
+    { 
+      content: "@param something The thing for the stuff.", 
+      template: ["Parameter Name", "Description"], 
+      values: ["something", "The thing for the stuff."] 
+    }, 
+    { 
+      content: "@param somethingelse The other thing for the stuff.", 
+      template: ["Parameter Name", "Description"], 
+      values: ["somethingelse", "The thing for the stuff."] 
+    } 
+  ] 
 } 
 ``` 
 
@@ -143,4 +171,4 @@ as follows:
 |prefix|The prefix to add to the doc packages.|
 |options|Optional arguments.|
 
-**Returned Value:**  An array of the parsed docs for the file.
+**Returned Value:**  An array of the parsed docs for the file. 
