@@ -200,7 +200,10 @@ function formMarkdown(data, options) {
 		}
 	}
 	
-	return markdown;
+	if (options.template) {
+		let template = _fs.readFileSync(_path.resolve(options.template), "utf8");
+		return template.replace(/\s\{{2}\s*content\s*\}{2}\s/g, markdown);
+	} else return markdown;
 }
 
 /*
