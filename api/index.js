@@ -2,6 +2,9 @@
 
 const DEFAULT_SOURCE_PREFIX = "..";
 const DEFAULT_REG = /^(?!\.).*/;
+const DEFAULT_BREADCRUMB_CHAR = ">";
+const DEFAULT_INDEX_FILE = "README.md";
+const DEFAULT_INDEX_LENGTH = 3;
 
 const tags = {
 	author: ["Name"],
@@ -18,6 +21,30 @@ const tags = {
 
 const _path = require("path");
 const _fs = require("fs");
+
+/**
+ * Change the template for one of the preset tags. The
+ * default tags are defined as:
+ * 
+ * - author: ["Name"]
+ * - version: ["Current Version"]
+ * - param: ["Parameter Name", "Description"]
+ * - "return": ["Returned Value"]
+ * - exception: ["Exception", "Description"]
+ * - throws: ["Exception", "Description"]
+ * - see: ["Reference"]
+ * - link: ["Reference"]
+ * - since: ["Version"]
+ * - deprecated: ["Deprecation"]
+ * 
+ * @param tag 		The name of the tag (without the leading '@').
+ * @param template	The template to use for the tag (a string array).
+ * @return 			An object containing all of the current tags.
+ */
+function setTag(tag, template) {
+	tags[tag] = template;
+	return tags;
+}
 
 
 /**
@@ -44,30 +71,68 @@ function generateMarkdownFiles(dir, out, options) {
 	}
 	
 	let data = parseDirectory(dir, null, options);
-	generateMarkdownFilesRecursive(data, out, null, options);
+	let files = generateMarkdownFilesRecursive(data, out, null, options);
 }
 
+/*
+ * Recursively generates a set of markdown docs from the provided data string.
+ * 
+ * @param data		The data object to generate the files from.
+ * @param out		The directory in which to place generated files.
+ * @param options	Optional arguments.
+ * @return			An array of the names of the generated files.
+ */
 function generateMarkdownFilesRecursive(data, out, prefix, options) {
 	if (!options)
 		options = {};
 
+	let fileNames = [];
+
+	let path = out;
+	if (prefix) {
+		prefix.split(".").forEach((dir) => {
+			path += "/" + dir;
+			let resolved = _path.resolve(path);
+			if (!_fs.existsSync(resolved))
+				_fs.mkdirSync(resolved);
+		});
+	}
+
 	for (let item in data) {
+		let outs = out.split("/");
+		if (item == outs[outs.length - 1])
+			continue;
+	
 		if (Array.isArray(data[item])) {
 			if (data[item].length > 0) {
-				let path = out;
-				if (prefix) {
-					prefix.split(".").forEach((dir) => {
-						path += "/" + dir;
-						let resolved = _path.resolve(path);
-						if (!_fs.existsSync(resolved))
-							_fs.mkdirSync(resolved);
-					});
+				if (options.breadcrumbs) {
+					options.breadcrumbs = ["."];
+					if (prefix)
+						options.breadcrumbs = options.breadcrumbs.concat(prefix.split("."));
+					
+					options.breadcrumbs = options.breadcrumbs.concat([item]);
 				}
-			
-				_fs.writeFileSync(_path.resolve(path + "/" + (options.extensions ? item : item.split(".")[0]) + ".md"), formMarkdown(data[item], options));
+
+				let fileName = (options.extensions ? item : item.split(".")[0]) + ".md";
+				_fs.writeFileSync(_path.resolve(path + "/" + fileName), formMarkdown(data[item], options));
+				fileNames.push(fileName);
 			}
-		} else generateMarkdownFilesRecursive(data[item], out, (prefix ? prefix + "." : "") + item, options);
+		} else {
+			let files = generateMarkdownFilesRecursive(data[item], out, (prefix ? prefix + "." : "") + item, options);
+			if (out.indexDirs && files.length > 0)
+				fileNames.push(item + "/");
+			
+			for (let i in files) {
+				fileNames.push(item + "/" + files[i]);
+			}
+		}
 	}
+
+	if (options.index && (!options.indexLength || options.indexLength > 0))
+		_fs.writeFileSync(_path.resolve(path + "/" + (options.index.length > 0 ? options.index : DEFAULT_INDEX_FILE)), 
+				formIndex(fileNames, prefix, options));
+
+	return fileNames;
 }
 
 /**
@@ -88,7 +153,7 @@ function generateMarkdownFile(file, out, options) {
 /**
  * Form basic markdown from an array of parsed data.
  * 
- * @param data 		The parsed data (returned by {@link #parseFile})
+ * @param data 		The parsed data (returned by [parseFile](#parseFile))
  * 					to generate markdown from.
  * @param options	Optional arguments.
  * @return 			A string of the markdown formatted docs.
@@ -98,6 +163,10 @@ function formMarkdown(data, options) {
 		options = {};
 		
 	let markdown = "";
+
+	if (options.breadcrumbs && options.breadcrumbs.length > 0) {
+		markdown += formBreadcrumbs(options.breadcrumbs, options) + "\n\n";
+	}
 	
 	for (let i in data) {
 		if (data[i].type.includes("public") || !options.isPublic) {
@@ -131,6 +200,71 @@ function formMarkdown(data, options) {
 		}
 	}
 	
+	if (options.template) {
+		let template = _fs.readFileSync(_path.resolve(options.template), "utf8");
+		return template.replace(/\s\{{2}\s*content\s*\}{2}\s/g, markdown);
+	} else return markdown;
+}
+
+/*
+ * Forms a group of markdown breadcrumbs from the provided array.
+ * 
+ * @param breadcrumbs 	An array of all of the files in the stack,
+ * 						ending with the current file name. Length
+ * 						*must* be greater than zero.
+ * @param options		Optional arguments.
+ */
+function formBreadcrumbs(breadcrumbs, options) {
+	if (!options)
+		options = {};
+	if (!options.breadcrumbChar)
+		options.breadcrumbChar = DEFAULT_BREADCRUMB_CHAR;
+
+	let markdown = "#### ";
+	for (let i = 0; i < breadcrumbs.length - 1; i++) {
+		markdown += "[" + breadcrumbs[i] + "](" + "../".repeat(breadcrumbs.length - i - 1) + ") " + options.breadcrumbChar + " ";
+	}
+	
+	return markdown + "**" + breadcrumbs[breadcrumbs.length - 1] + "**";
+}
+
+/*
+ * Forms an index page for the given file names and prefix.
+ * 
+ * @param fileNames		An array of the files to add to the index.
+ * @param prefix		The current directory, separated by "."s.
+ * @param options		Optional arguments.
+ */
+function formIndex(fileNames, prefix, options) {
+	if (!options.indexLength)
+		options.indexLength = DEFAULT_INDEX_LENGTH;
+
+	fileNames = fileNames.slice(); // duplicate array, modifications should not persist
+
+	let markdown = "";
+	if (options.breadcrumbs && prefix && prefix.length > 0) {
+		markdown += formBreadcrumbs(["."].concat(prefix ? prefix.split(".") : []), options) + "\n\n";
+	}
+	
+	for (let i = 0; i < fileNames.length; i++) {
+		let path = fileNames[i].split("/");
+		let indent = path.length;
+		if (path[path.length - 1].length < 1)
+			indent--;
+			
+		if (!prefix || prefix.length < 1 || indent <= options.indexLength)
+			markdown += "- [" + fileNames[i] + "](" + fileNames[i] + ")\n";
+		else {
+			let fileName = "";
+			for (let i = 0; i < options.indexLength && i < path.length; i++) {
+				fileName += path[i] + "/";
+			}
+			
+			if (!fileNames.includes(fileName))
+				fileNames.push(fileName);
+		}
+	}
+
 	return markdown;
 }
 
@@ -365,3 +499,4 @@ module.exports.parseFile = parseFile;
 module.exports.formMarkdown = formMarkdown;
 module.exports.generateMarkdownFile = generateMarkdownFile;
 module.exports.generateMarkdownFiles = generateMarkdownFiles;
+module.exports.setTag = setTag;

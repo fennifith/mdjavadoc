@@ -89,17 +89,6 @@ This is a method which does a thing with something and stuff.
 **Returned Value:** A thing.
 ```
 
-## Configuration
-
-Aside from an input and output file/directory, the script has several options which you can specify to alter the output of the program.
-
-| Option Name  | Type    | Description |
-|--------------|---------|-------------|
-| reg          | RegExp  | A regular expression to filter out unwanted files (defaults to `/^(?!\.).*/`, or "any file that does not begin with a `.`"). |
-| regdir       | RegExp  | `reg` but for directories. |
-| extensions   | boolean | Whether to include the file extensions in the generated content (setting this to true will name files "ClassName.java.md" instead of just "ClassName.md") |
-| sourcePrefix | string  | A string to start all source code URLs with. Defaults to "..". For example, a link to "/api/index.js#L50" will become "../api/index.js#L50". |
-
 ## Contributing
 
 Contributions are accepted. See this project's [CONTRIBUTING.md](./.github/CONTRIBUTING.md) for instructions on how to contribute to this project.
