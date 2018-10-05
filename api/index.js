@@ -255,7 +255,7 @@ function formIndex(fileNames, prefix, options) {
 			indent--;
 			
 		if (!prefix || prefix.length < 1 || indent <= options.indexLength)
-			markdown += "- [" + fileNames[i].split(".")[0] + "](" + (options.indexExtensions ? fileNames[i] : fileNames[i].split(".")[0]) + ")\n";
+			markdown += "- [" + fileNames[i].split(".")[0].split("/").join(" / ") + "](" + (options.indexExtensions ? fileNames[i] : fileNames[i].split(".")[0]) + ")\n";
 		else {
 			let fileName = "";
 			for (let i = 0; i < options.indexLength && i < path.length; i++) {
