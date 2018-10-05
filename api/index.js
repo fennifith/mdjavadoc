@@ -169,30 +169,28 @@ function formMarkdown(data, options) {
 	}
 	
 	for (let i in data) {
-		if (data[i].type.includes("public") || !options.isPublic) {
-			if (data[i].type.includes("class"))
-				markdown += "# ";
-			else markdown += "## ";
-			markdown += "[" + data[i].name + "](" + data[i].source + ")" + "\n\n";
+		if (data[i].type.includes("class"))
+			markdown += "# ";
+		else markdown += "## ";
+		markdown += "[" + data[i].name + "](" + data[i].source + ")" + "\n\n";
 			
-			if (data[i].type.length > 0)
-				markdown += "**Type:** `" + data[i].type.join("` `") + "`\n\n";
+		if (data[i].type.length > 0)
+			markdown += "**Type:** `" + data[i].type.join("` `") + "`\n\n";
 			
-			markdown += data[i].description + "\n";
+		markdown += data[i].description + "\n";
 			
-			for (let tag in tags) {
-				if (data[i][tag] && data[i][tag].length > 0) {
-					let isTable = tags[tag].length > 1;
-					if (isTable) {
-						markdown += "\n|" + tags[tag].join("|") + "|\n";
-						markdown += "|" + "-----|".repeat(tags[tag].length) + "\n";
-					} else markdown += "\n**" + tags[tag][0] + ":** ";
+		for (let tag in tags) {
+			if (data[i][tag] && data[i][tag].length > 0) {
+				let isTable = tags[tag].length > 1;
+				if (isTable) {
+					markdown += "\n|" + tags[tag].join("|") + "|\n";
+					markdown += "|" + "-----|".repeat(tags[tag].length) + "\n";
+				} else markdown += "\n**" + tags[tag][0] + ":** ";
 					
-					for (let item in data[i][tag]) {
-						if (isTable)
-							markdown += "|" + data[i][tag][item].values.join("|") + "|\n";
-						else markdown += data[i][tag][item].values[0] + "\n\n";
-					}
+				for (let item in data[i][tag]) {
+					if (isTable)
+						markdown += "|" + data[i][tag][item].values.join("|") + "|\n";
+					else markdown += data[i][tag][item].values[0] + "\n\n";
 				}
 			}
 
