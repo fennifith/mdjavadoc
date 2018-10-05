@@ -46,7 +46,7 @@ The `options` argument on each method is simply an object containing optional ar
 
 Yes, this program has written its own documentation.
 
-## [setTag](..//index.js#L26)
+## [setTag](https://github.com/TheAndroidMaster/mdjavadoc/blob/master/api/index.js#L26)
 
 **Type:** `function`
 
@@ -74,7 +74,7 @@ default tags are defined as:
 **Returned Value:**  An object containing all of the current tags. 
 
 
-## [generateMarkdownFiles](..//index.js#L51)
+## [generateMarkdownFiles](https://github.com/TheAndroidMaster/mdjavadoc/blob/master/api/index.js#L51)
 
 **Type:** `function`
 
@@ -88,7 +88,7 @@ Generates a set of markdown docs from the files in a directory.
 |out|The directory in which to place generated files.|
 |options|Optional arguments. |
 
-## [generateMarkdownFile](..//index.js#L139)
+## [generateMarkdownFile](https://github.com/TheAndroidMaster/mdjavadoc/blob/master/api/index.js#L139)
 
 **Type:** `function`
 
@@ -102,7 +102,7 @@ Generates a markdown doc from the specified file.
 |out|The file to output the markdown into.|
 |options|Optional arguments. |
 
-## [formMarkdown](..//index.js#L154)
+## [formMarkdown](https://github.com/TheAndroidMaster/mdjavadoc/blob/master/api/index.js#L154)
 
 **Type:** `function`
 
@@ -118,7 +118,7 @@ Form basic markdown from an array of parsed data.
 **Returned Value:**  A string of the markdown formatted docs. 
 
 
-## [parseDirectory](..//index.js#L269)
+## [parseDirectory](https://github.com/TheAndroidMaster/mdjavadoc/blob/master/api/index.js#L269)
 
 **Type:** `function`
 
@@ -135,7 +135,7 @@ Parses docs for all of the files in a directory.
 **Returned Value:**  An array of the docs fetched from each file. 
 
 
-## [parseFile](..//index.js#L297)
+## [parseFile](https://github.com/TheAndroidMaster/mdjavadoc/blob/master/api/index.js#L297)
 
 **Type:** `function`
 
