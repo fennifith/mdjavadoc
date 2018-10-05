@@ -2,7 +2,7 @@
 
 const DEFAULT_SOURCE_PREFIX = "..";
 const DEFAULT_REG = /^(?!\.).*/;
-const DEFAULT_BREADCRUMB_CHAR = ">";
+const DEFAULT_BREADCRUMB_CHAR = " > ";
 const DEFAULT_INDEX_FILE = "README.md";
 const DEFAULT_INDEX_LENGTH = 3;
 
@@ -128,7 +128,7 @@ function generateMarkdownFilesRecursive(data, out, prefix, options) {
 		}
 	}
 
-	if (options.index && (!options.indexLength || options.indexLength > 0))
+	if (options.index && (!options.indexLength || options.indexLength > 0) && fileNames.length > 0)
 		_fs.writeFileSync(_path.resolve(path + "/" + (options.index.length > 0 ? options.index : DEFAULT_INDEX_FILE)), 
 				formIndex(fileNames, prefix, options));
 
@@ -169,30 +169,28 @@ function formMarkdown(data, options) {
 	}
 	
 	for (let i in data) {
-		if (data[i].type.includes("public") || !options.isPublic) {
-			if (data[i].type.includes("class"))
-				markdown += "# ";
-			else markdown += "## ";
-			markdown += "[" + data[i].name + "](" + data[i].source + ")" + "\n\n";
+		if (data[i].type.includes("class"))
+			markdown += "# ";
+		else markdown += "## ";
+		markdown += "[" + data[i].name + "](" + data[i].source + ")" + "\n\n";
 			
-			if (data[i].type.length > 0)
-				markdown += "**Type:** `" + data[i].type.join("` `") + "`\n\n";
+		if (data[i].type.length > 0)
+			markdown += "**Type:** `" + data[i].type.join("` `") + "`\n\n";
 			
-			markdown += data[i].description + "\n";
+		markdown += data[i].description + "\n";
 			
-			for (let tag in tags) {
-				if (data[i][tag] && data[i][tag].length > 0) {
-					let isTable = tags[tag].length > 1;
-					if (isTable) {
-						markdown += "\n|" + tags[tag].join("|") + "|\n";
-						markdown += "|" + "-----|".repeat(tags[tag].length) + "\n";
-					} else markdown += "\n**" + tags[tag][0] + ":** ";
+		for (let tag in tags) {
+			if (data[i][tag] && data[i][tag].length > 0) {
+				let isTable = tags[tag].length > 1;
+				if (isTable) {
+					markdown += "\n|" + tags[tag].join("|") + "|\n";
+					markdown += "|" + "-----|".repeat(tags[tag].length) + "\n";
+				} else markdown += "\n**" + tags[tag][0] + ":** ";
 					
-					for (let item in data[i][tag]) {
-						if (isTable)
-							markdown += "|" + data[i][tag][item].values.join("|") + "|\n";
-						else markdown += data[i][tag][item].values[0] + "\n\n";
-					}
+				for (let item in data[i][tag]) {
+					if (isTable)
+						markdown += "|" + data[i][tag][item].values.join("|") + "|\n";
+					else markdown += data[i][tag][item].values[0] + "\n\n";
 				}
 			}
 
@@ -222,7 +220,9 @@ function formBreadcrumbs(breadcrumbs, options) {
 
 	let markdown = "#### ";
 	for (let i = 0; i < breadcrumbs.length - 1; i++) {
-		markdown += "[" + breadcrumbs[i] + "](" + "../".repeat(breadcrumbs.length - i - 1) + ") " + options.breadcrumbChar + " ";
+		markdown += "[" + breadcrumbs[i] + "](./" + "../".repeat(breadcrumbs.length - i - 2) 
+				+ (options.index && options.index.length > 0 ? (options.indexExtensions ? options.index : options.index.split(".")[0]) : "") 
+				+ ")" + options.breadcrumbChar;
 	}
 	
 	return markdown + "**" + breadcrumbs[breadcrumbs.length - 1] + "**";
@@ -236,6 +236,8 @@ function formBreadcrumbs(breadcrumbs, options) {
  * @param options		Optional arguments.
  */
 function formIndex(fileNames, prefix, options) {
+	if (!options)
+		options = {};
 	if (!options.indexLength)
 		options.indexLength = DEFAULT_INDEX_LENGTH;
 
@@ -243,7 +245,7 @@ function formIndex(fileNames, prefix, options) {
 
 	let markdown = "";
 	if (options.breadcrumbs && prefix && prefix.length > 0) {
-		markdown += formBreadcrumbs(["."].concat(prefix ? prefix.split(".") : []), options) + "\n\n";
+		markdown += formBreadcrumbs(["."].concat(prefix ? prefix.split(".") : []).concat(["/"]), options) + "\n\n";
 	}
 	
 	for (let i = 0; i < fileNames.length; i++) {
@@ -253,7 +255,7 @@ function formIndex(fileNames, prefix, options) {
 			indent--;
 			
 		if (!prefix || prefix.length < 1 || indent <= options.indexLength)
-			markdown += "- [" + fileNames[i] + "](" + fileNames[i] + ")\n";
+			markdown += "- [" + fileNames[i].split(".")[0] + "](" + (options.indexExtensions ? fileNames[i] : fileNames[i].split(".")[0]) + ")\n";
 		else {
 			let fileName = "";
 			for (let i = 0; i < options.indexLength && i < path.length; i++) {
@@ -264,8 +266,11 @@ function formIndex(fileNames, prefix, options) {
 				fileNames.push(fileName);
 		}
 	}
-
-	return markdown;
+	
+	if (options.indexTemplate) {
+		let template = _fs.readFileSync(_path.resolve(options.indexTemplate), "utf8");
+		return template.replace(/\s\{{2}\s*content\s*\}{2}\s/g, markdown);
+	} else return markdown;
 }
 
 /**

@@ -9,13 +9,15 @@ _program.version("1.0.0", '-v --version')
 	.option('-o --output [path]', "location to store generated files in")
 	.option('-f --file [file]', "a specific file to parse")
 	.option('-t --template [file]', "a template to use for generated files")
+	.option('-e --extensions', "include extensions in generated file names")
 	.option('--filter [expression]', "file name filter")
 	.option('--dirfilter [expression]', "dir name filter")
 	.option('--prefix [url]', "source code prefix")
 	.option('-b --breadcrumbs [char]', "generate breadcrumbs")
 	.option('-i --index [name]', "generate index files with the given name")
 	.option('--index-length [length]', "number of directories for internal index files to look into")
-	.option('-e --extensions', "include extensions in generated file names");
+	.option('--index-template [file]', "a template to use for index files")
+	.option('--index-extensions', "include extensions in index files");
 
 _program.parse(process.argv);
 
@@ -35,6 +37,8 @@ if (_program.file) {
 		breadcrumbsChar: _program.breadcrumbs instanceof String ? _program.breadcrumbs : null,
 		index: _program.index,
 		indexLength: _program["index-length"],
+		indexTemplate: _program["index-template"],
+		indexExtensions: _program["index-extensions"],
 		extensions: _program.extensions
 	});
 }

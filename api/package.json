@@ -1,6 +1,6 @@
 {
   "name": "mdjavadoc-api",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Generates markdown javadocs for use in Jekyll and GitHub Pages.",
   "main": "index.js",
   "scripts": {
