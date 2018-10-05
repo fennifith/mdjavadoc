@@ -145,22 +145,22 @@ as follows:
 
 ```javascript 
 { 
-name: "methodName", 
-description: "This method does a thing with something and somethingelse.", 
-type: ["function"], // basically an array of anything that comes before the method name 
-source: "/package/structure/ClassName.java#L247", 
-param: [ // all tags are added to the map 
-{ 
-content: "@param something The thing for the stuff.", 
-template: ["Parameter Name", "Description"], 
-values: ["something", "The thing for the stuff."] 
-}, 
-{ 
-content: "@param somethingelse The other thing for the stuff.", 
-template: ["Parameter Name", "Description"], 
-values: ["somethingelse", "The thing for the stuff."] 
-} 
-] 
+  name: "methodName", 
+  description: "This method does a thing with something and somethingelse.", 
+  type: ["function"], // basically an array of anything that comes before the method name 
+  source: "/package/structure/ClassName.java#L247", 
+  param: [ // all tags are added to the map 
+    { 
+      content: "@param something The thing for the stuff.", 
+      template: ["Parameter Name", "Description"], 
+      values: ["something", "The thing for the stuff."] 
+    }, 
+    { 
+      content: "@param somethingelse The other thing for the stuff.", 
+      template: ["Parameter Name", "Description"], 
+      values: ["somethingelse", "The thing for the stuff."] 
+    } 
+  ] 
 } 
 ``` 
 
