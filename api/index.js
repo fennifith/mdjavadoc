@@ -246,7 +246,6 @@ function formIndex(fileNames, prefix, options) {
 		markdown += formBreadcrumbs(["."].concat(prefix ? prefix.split(".") : []).concat(["/"]), options) + "\n\n";
 	}
 	
-	console.log(JSON.stringify(formIndexObjectRecursive(fileNames, options), null, 2));
 	markdown += formIndexRecursive(formIndexObjectRecursive(fileNames, options), 0, "", options);
 	
 	if (options.indexTemplate) {
