@@ -115,7 +115,7 @@ function generateMarkdownFilesRecursive(data, out, prefix, options) {
 				}
 
 				let fileName = (options.extensions ? item : item.split(".")[0]) + ".md";
-				_fs.writeFileSync(_path.resolve(path + "/" + fileName), formMarkdown(data[item], options));
+				_fs.writeFileSync(_path.resolve(path + "/" + fileName), formMarkdown(data[item], item.split(".")[0], options));
 				fileNames.push(fileName);
 			}
 		} else {
@@ -147,7 +147,7 @@ function generateMarkdownFile(file, out, options) {
 	if (!options)
 		options = {};
 	
-	let markdown = formMarkdown(parseFile(file, options.prefix, options), options);
+	let markdown = formMarkdown(parseFile(file, options.prefix, options), file.split("/").pop().split(".")[0], options);
 	_fs.writeFileSync(_path.resolve(out), markdown);
 }
 
@@ -156,10 +156,11 @@ function generateMarkdownFile(file, out, options) {
  * 
  * @param data 		The parsed data (returned by [parseFile](#parseFile))
  * 					to generate markdown from.
+ * @param fileName	The name of the file being generated.
  * @param options	Optional arguments.
  * @return 			A string of the markdown formatted docs.
  */
-function formMarkdown(data, options) {
+function formMarkdown(data, fileName, options) {
 	if (!options)
 		options = {};
 		
@@ -201,7 +202,8 @@ function formMarkdown(data, options) {
 	
 	if (options.template) {
 		let template = _fs.readFileSync(_path.resolve(options.template), "utf8");
-		return template.replace(/\s\{{2}\s*content\s*\}{2}\s/g, markdown);
+		return template.replace(/\s\{{2}\s*content\s*\}{2}\s/g, markdown)
+				.replace(/\s\{{2}\s*fileName\s*\}{2}\s/g, fileName);
 	} else return markdown;
 }
 
@@ -237,11 +239,6 @@ function formBreadcrumbs(breadcrumbs, options) {
  * @param options		Optional arguments.
  */
 function formIndex(fileNames, prefix, options) {
-	if (!options)
-		options = {};
-	if (!options.indexLength)
-		options.indexLength = DEFAULT_INDEX_LENGTH;
-
 	fileNames = fileNames.slice(); // duplicate array, modifications should not persist
 
 	let markdown = "";
@@ -249,29 +246,65 @@ function formIndex(fileNames, prefix, options) {
 		markdown += formBreadcrumbs(["."].concat(prefix ? prefix.split(".") : []).concat(["/"]), options) + "\n\n";
 	}
 	
-	for (let i = 0; i < fileNames.length; i++) {
-		let path = fileNames[i].split("/");
-		let indent = path.length;
-		if (path[path.length - 1].length < 1)
-			indent--;
-			
-		if (!prefix || prefix.length < 1 || indent <= options.indexLength)
-			markdown += "- [" + fileNames[i].split(".")[0].split("/").join(" / ") + "](" + (options.indexExtensions ? fileNames[i] : fileNames[i].split(".")[0]) + ")\n";
-		else {
-			let fileName = "";
-			for (let i = 0; i < options.indexLength && i < path.length; i++) {
-				fileName += path[i] + "/";
-			}
-			
-			if (!fileNames.includes(fileName))
-				fileNames.push(fileName);
-		}
-	}
+	console.log(JSON.stringify(formIndexObjectRecursive(fileNames, options), null, 2));
+	markdown += formIndexRecursive(formIndexObjectRecursive(fileNames, options), 0, "", options);
 	
 	if (options.indexTemplate) {
 		let template = _fs.readFileSync(_path.resolve(options.indexTemplate), "utf8");
 		return template.replace(/\s\{{2}\s*content\s*\}{2}\s/g, markdown);
 	} else return markdown;
+}
+
+function formIndexObjectRecursive(fileNames, options) {	
+	let obj = {};
+	let names = {};
+	
+	for (let i in fileNames) {
+		let arr = fileNames[i].split("/");
+		let name = arr.shift();
+		if (arr.length > 0) {
+			if (names[name])
+				names[name].push(arr.join("/"));
+			else names[name] = [arr.join("/")];
+		} else obj[name] = true;
+	}
+		
+	for (let name in names) {
+		obj[name] = formIndexObjectRecursive(names[name], options);
+	}
+		
+	return obj;
+}
+
+function formIndexRecursive(index, indent, prevDir, options) {
+	if (!options)
+		options = {};
+	if (!options.indexLength)
+		options.indexLength = DEFAULT_INDEX_LENGTH;
+	
+	let markdown = "";
+	
+	for (let dir in index) {
+		let dirKeys = Object.keys(index[dir]);
+		while (typeof index[dir] != "boolean" && dirKeys.length == 1) {
+			let key = dirKeys[0];
+			index[dir + "/" + key] = index[dir][key];
+			dirKeys = Object.keys(index[dir][key]);
+			delete index[dir];
+			dir += "/" + key;
+		}	
+
+		if (typeof index[dir] == "boolean") {
+			markdown += "\t".repeat(indent) + "- [" + dir.split(".")[0] + "](" + (prevDir ? prevDir + "/" : "") 
+					+ (options.indexExtensions ? dir : dir.split(".")[0]) + ")\n";		
+		} else {		
+			markdown += "\t".repeat(indent) + "- [" + dir + "/](" + (prevDir ? prevDir + "/" : "") + dir + ")\n";
+			if (indent < options.indexLength)
+				markdown += formIndexRecursive(index[dir], indent + 1, (prevDir ? prevDir + "/" : "") + dir, options);
+		}
+	}
+	
+	return markdown;
 }
 
 /**
