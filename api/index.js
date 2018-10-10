@@ -384,7 +384,6 @@ function parseFile(file, prefix, options) {
 		let startIndex = match.index + match[0].length;
 		startIndex += content.substring(startIndex).indexOf("\n") + 1;
 		let declaration = content.substring(startIndex, startIndex + content.substring(startIndex).indexOf("\n"));
-		declaration = declaration.replace(/\<(?!\s)((?:(?!\>).)*)(?<!\s)\> /g, "")
 		let type = [];
 		
 		while (declaration.trim().startsWith("@")) {
@@ -394,7 +393,7 @@ function parseFile(file, prefix, options) {
 			declaration = content.substring(startIndex, startIndex + content.substring(startIndex).indexOf("\n"));
 		}
 		
-		type = type.concat((/([A-Z0-9a-z\. ]*)/g).exec(declaration)[1].trim().split(" "));
+		type = type.concat((/([A-Z0-9a-z\.\<\> ]*)/g).exec(declaration.trim())[1].trim().split(" "));
 		
 		let doc = {
 			name: type.pop(),
