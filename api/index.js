@@ -294,10 +294,10 @@ function formIndexRecursive(index, indent, prevDir, options) {
 		}	
 
 		if (typeof index[dir] == "boolean") {
-			markdown += "\t".repeat(indent) + "- [" + dir.split(".")[0] + "](" + (prevDir ? prevDir + "/" : "") 
+			markdown += "\t".repeat(indent) + "- [" + dir.split(".")[0].replace(/\//g, " / ") + "](" + (prevDir ? prevDir + "/" : "") 
 					+ (options.indexExtensions ? dir : dir.split(".")[0]) + ")\n";		
 		} else {		
-			markdown += "\t".repeat(indent) + "- [" + dir + "/](" + (prevDir ? prevDir + "/" : "") + dir + ")\n";
+			markdown += "\t".repeat(indent) + "- [" + dir.replace(/\//g, " / ") + " /](" + (prevDir ? prevDir + "/" : "") + dir + ")\n";
 			if (indent < options.indexLength)
 				markdown += formIndexRecursive(index[dir], indent + 1, (prevDir ? prevDir + "/" : "") + dir, options);
 		}
