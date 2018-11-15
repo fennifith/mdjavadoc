@@ -15,7 +15,7 @@ npm install -g mdjavadoc
 ```shell
 git clone https://github.com/TheAndroidMaster/mdjavadoc
 cd mdjavadoc/cli
-sudo npm install -g
+npm install
 sudo npm link
 ```
 
