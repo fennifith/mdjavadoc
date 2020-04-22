@@ -393,7 +393,7 @@ function parseFile(file, prefix, options) {
 			declaration = content.substring(startIndex, startIndex + content.substring(startIndex).indexOf("\n"));
 		}
 		
-		type = type.concat((/([A-Z0-9a-z\.\<\> ]*)/g).exec(declaration.trim())[1].trim().split(" "));
+		type = type.concat((/([A-Z0-9a-z\@\.\<\>\s]*)/g).exec(declaration.trim())[1].trim().split(" "));
 		
 		let doc = {
 			name: type.pop(),
